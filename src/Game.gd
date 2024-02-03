@@ -1,6 +1,26 @@
 extends Node
 
+'''
+Вместилище глобальных переменных
+'''
 
+# id -> data ({})
+# data <- {"wirangs"}
+
+
+
+
+var inventory = [
+	{}
+]
+
+
+var current_state = GameState.prepare
+
+enum GameState{
+	prepare,
+	inbattle
+}
 
 enum Team{
 	player,
@@ -12,9 +32,7 @@ enum EntityState{
 	idle,
 	near,
 	seek,
-	attacking,
-	casting,
-	dead
+	dead,
 }
 
 @onready var manager = get_parent().get_node("Manager")

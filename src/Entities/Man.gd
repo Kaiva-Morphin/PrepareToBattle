@@ -10,8 +10,6 @@ func _on_state_changed(new_state):
 		Game.EntityState.near:
 			$"Animation".play("Idle")
 			weapon.start_attack(target)
-		Game.EntityState.attacking:
-			weapon.stop()
 		Game.EntityState.seek:
 			$"Animation".play("Walk")
 			weapon.stop()

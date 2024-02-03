@@ -1,5 +1,5 @@
 class_name Weapon
-extends Node2D
+extends Item
 
 var current_target : Entity = null
 @export var damage : float = 3.

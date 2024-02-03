@@ -13,7 +13,7 @@ radius = 5.09902
 script = ExtResource("1_wd8r8")
 team = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Collision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_6vtff")
 
 [node name="Mirror" type="Node2D" parent="."]
@@ -92,6 +92,7 @@ texture_progress = ExtResource("5_surlc")
 texture_progress_offset = Vector2(1, 1)
 
 [node name="DEBUG" type="Label" parent="."]
+visible = false
 offset_left = -30.0
 offset_top = -40.0
 offset_right = 56.0

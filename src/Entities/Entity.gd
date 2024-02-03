@@ -2,10 +2,11 @@ class_name Entity
 extends CharacterBody2D
 
 
+
 @export var specialisation : Node2D = null
 @export var weapon : Weapon = null
 
-
+@export var paused := true
 
 @export var hp : float = 100.
 @export var max_hp : float = 100.
@@ -14,6 +15,7 @@ extends CharacterBody2D
 
 @export var team : Game.Team
 
+@onready var collision = get_node("Collision")
 var current_state = Game.EntityState.seek
 
 func _ready():
@@ -31,6 +33,19 @@ func _ready():
 		null:
 			color = Color.BLACK
 	$EntityLabel.modulate = color
+	if !paused:
+		init()
+
+func pause():
+	paused = true
+	$UpdateTargetPosition.stop()
+	$UpdateTargets.stop()
+
+func unpause():
+	paused = false
+	init()
+
+func init():
 	$UpdateTargetPosition.start()
 	$UpdateTargets.start()
 	weapon = get_node("Mirror/Weapon").get_child(0)

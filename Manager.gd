@@ -2,9 +2,6 @@ extends Node2D
 
 
 
-func _ready() -> void:
-	pass
-	
 
 func get_closest_oppositive_team_member(pos : Vector2, team : Game.Team) -> Node2D:
 	var tree = get_tree()
@@ -33,28 +30,26 @@ func get_closest_oppositive_team_member(pos : Vector2, team : Game.Team) -> Node
 			pass
 	return null
 
-var space_state : PhysicsDirectSpaceState2D = null
-func _physics_process(_delta: float) -> void:
-	space_state = get_world_2d().direct_space_state
 
-var picked_node : Node2D = null
-func _process(_delta: float) -> void:
-	var pos = get_global_mouse_position()
-	if Input.is_action_just_pressed("lmb"):
-		if picked_node:
-			picked_node = null
-		else:
-			picked_node = null
-			if space_state:
-				var query = PhysicsRayQueryParameters2D.create(pos - Vector2(20, 20), pos + Vector2(20, 20))
-				var result = space_state.intersect_ray(query)
-				if result:
-					var col = result.collider
-					if col.is_in_group("entity"):
-						picked_node = col
-	if picked_node:
-		picked_node.position = pos
-	#var pos = 
-	#var c = $PICKER/Ray.get_collider()
-	
-
+#
+#var picked_node : Node2D = null
+#func _process(_delta: float) -> void:
+	#var pos = get_global_mouse_position()
+	#if Input.is_action_just_pressed("lmb"):
+		#if picked_node:
+			#picked_node = null
+		#else:
+			#picked_node = null
+			#if space_state:
+				#var query = PhysicsRayQueryParameters2D.create(pos - Vector2(20, 20), pos + Vector2(20, 20))
+				#var result = space_state.intersect_ray(query)
+				#if result:
+					#var col = result.collider
+					#if col.is_in_group("entity"):
+						#picked_node = col
+	#if picked_node:
+		#picked_node.position = pos
+	##var pos = 
+	##var c = $PICKER/Ray.get_collider()
+	#
+#

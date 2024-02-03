@@ -13,13 +13,13 @@ config_version=5
 config/name="PrepareToBattle"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-boot_splash/bg_color=Color(0, 0, 0, 1)
 config/icon="res://icon.svg"
 
 [autoload]
 
 Game="*res://src/Game.gd"
 Projectiles="*res://src/Projectiles.gd"
+Weapons="*res://Weapons.gd"
 
 [display]
 
@@ -40,6 +40,10 @@ rmb={
 ]
 }
 
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
 [physics]
 
 2d/default_gravity=0.0
@@ -48,4 +52,4 @@ rmb={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-environment/defaults/default_clear_color=Color(0, 0, 0, 1)
+environment/defaults/default_clear_color=Color(1, 1, 1, 1)
