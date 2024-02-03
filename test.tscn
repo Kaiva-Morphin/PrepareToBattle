@@ -1,0 +1,67 @@
+[gd_scene load_steps=4 format=3 uid="uid://djh5exescsv1a"]
+
+[ext_resource type="Script" path="res://test.gd" id="1_3she0"]
+[ext_resource type="Script" path="res://Manager.gd" id="1_qpfke"]
+[ext_resource type="Texture2D" uid="uid://d2cnssg2fjr1j" path="res://icon.svg" id="2_x18k8"]
+
+[node name="Manager" type="Node2D"]
+script = ExtResource("1_qpfke")
+
+[node name="Icon" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(205, 321)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon2" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(363, 438)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon3" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(525, 313)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon4" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(550, 142)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon5" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(320, 93)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon6" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(604, 232)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon7" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(206, 176)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon8" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(580, 418)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon9" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(384, 298)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="Icon10" type="Sprite2D" parent="." groups=["enemy"]]
+position = Vector2(341, 203)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="SHOWER" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 1, 1)
+position = Vector2(396, 251)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_x18k8")
+
+[node name="test" type="Node2D" parent="."]
+script = ExtResource("1_3she0")

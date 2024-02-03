@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dl8rc8ryu850g"]
+
+[ext_resource type="Script" path="res://Entity.gd" id="1_lwk3n"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6vtff"]
+
+[node name="Entity" type="RigidBody2D"]
+gravity_scale = 0.0
+can_sleep = false
+lock_rotation = true
+script = ExtResource("1_lwk3n")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_6vtff")
+
+[node name="UpdateTarget" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_postprocessing = 1
+debug_enabled = true
+
+[connection signal="timeout" from="UpdateTarget" to="." method="_on_update_target_timeout"]

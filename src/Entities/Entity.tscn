@@ -1,0 +1,103 @@
+[gd_scene load_steps=7 format=3 uid="uid://dl8rc8ryu850g"]
+
+[ext_resource type="Script" path="res://src/Entities/Entity.gd" id="1_wd8r8"]
+[ext_resource type="Texture2D" uid="uid://wf2wxgguxpf3" path="res://src/sprites/levellabel.png" id="2_57mqj"]
+[ext_resource type="FontFile" uid="uid://cwp7h6bubwify" path="res://src/fonts/visitor-brk/visitor1.ttf" id="3_jjtf8"]
+[ext_resource type="Texture2D" uid="uid://ldanhp1iacqk" path="res://src/sprites/healthlabel.png" id="4_srrrc"]
+[ext_resource type="Texture2D" uid="uid://gsv8yho6nxie" path="res://src/sprites/healthlabel_progress.png" id="5_surlc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6vtff"]
+radius = 5.09902
+
+[node name="Entity" type="CharacterBody2D" groups=["entity"]]
+script = ExtResource("1_wd8r8")
+team = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_6vtff")
+
+[node name="Mirror" type="Node2D" parent="."]
+
+[node name="Weapon" type="Node2D" parent="Mirror"]
+
+[node name="UpdateTargetPosition" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="UpdateTargets" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." groups=["entity"]]
+path_postprocessing = 1
+debug_enabled = true
+debug_use_custom = true
+debug_path_custom_color = Color(1, 1, 1, 0.027451)
+
+[node name="EntityLabel" type="Control" parent="."]
+z_index = 10
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -12.0
+offset_right = -5.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Level" type="TextureRect" parent="EntityLabel"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = -5.0
+offset_right = 2.0
+offset_bottom = 4.0
+texture = ExtResource("2_57mqj")
+
+[node name="Label" type="Label" parent="EntityLabel/Level"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.5
+offset_top = -5.5
+offset_right = 4.5
+offset_bottom = 6.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_jjtf8")
+theme_override_font_sizes/font_size = 10
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Health" type="TextureProgressBar" parent="EntityLabel/Level"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -2.5
+offset_right = 24.0
+offset_bottom = 2.5
+grow_vertical = 2
+pivot_offset = Vector2(0, 2)
+value = 100.0
+texture_under = ExtResource("4_srrrc")
+texture_progress = ExtResource("5_surlc")
+texture_progress_offset = Vector2(1, 1)
+
+[node name="DEBUG" type="Label" parent="."]
+offset_left = -30.0
+offset_top = -40.0
+offset_right = 56.0
+offset_bottom = -17.0
+scale = Vector2(0.505, 0.505)
+text = "DEBUG"
+
+[connection signal="timeout" from="UpdateTargetPosition" to="." method="_on_update_target_position_timeout"]
+[connection signal="timeout" from="UpdateTargets" to="." method="_on_update_targets_timeout"]

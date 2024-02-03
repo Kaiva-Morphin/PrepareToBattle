@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bj1lic7wim8dd"]
+
+[ext_resource type="Script" path="res://src/Game.gd" id="1_hp46k"]
+[ext_resource type="Script" path="res://src/Projectiles.gd" id="2_aylcn"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_hp46k")
+
+[node name="Projectiles" type="Node" parent="."]
+script = ExtResource("2_aylcn")

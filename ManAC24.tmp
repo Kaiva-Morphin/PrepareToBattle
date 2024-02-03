@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvrcwr7kl6258"]
+
+[ext_resource type="PackedScene" uid="uid://dl8rc8ryu850g" path="res://Entity.tscn" id="1_doeqr"]
+[ext_resource type="Texture2D" uid="uid://d3ydwg3nw7s52" path="res://src/sprites/Human.png" id="2_g1oty"]
+
+[node name="Man" groups=["man"] instance=ExtResource("1_doeqr")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="3"]
+texture = ExtResource("2_g1oty")

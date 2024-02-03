@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://cofy2uyvmga0r"]
+
+[ext_resource type="PackedScene" uid="uid://dctt7dqkpf2r4" path="res://src/Weapons/Weapon.tscn" id="1_nex6s"]
+[ext_resource type="Script" path="res://src/Weapons/FireWard.gd" id="2_6tu0o"]
+[ext_resource type="Texture2D" uid="uid://burwwnla0mrq3" path="res://src/Weapons/FireWard.png" id="3_2rg1s"]
+[ext_resource type="AnimationLibrary" uid="uid://2rec4j76dlmx" path="res://src/Weapons/FireWardAnim.res" id="3_q5qt3"]
+
+[node name="FireWard" instance=ExtResource("1_nex6s")]
+script = ExtResource("2_6tu0o")
+damage = 50.0
+attack_speed = 1.0
+attack_range = 300.0
+
+[node name="Animation" type="AnimationPlayer" parent="." index="0"]
+libraries = {
+"": ExtResource("3_q5qt3")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="1"]
+position = Vector2(6, 0)
+texture = ExtResource("3_2rg1s")
