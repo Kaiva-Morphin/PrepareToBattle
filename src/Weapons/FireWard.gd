@@ -4,11 +4,11 @@ extends Weapon
 
 func on_attack():
 	if current_target and is_instance_valid(current_target):
-		var proj = Projectiles.FireBall.duplicate().instantiate()
-		proj.damage = self.damage
-		proj.homing = false
-		proj.speed = 100.
-		proj.target = self.current_target
-		Game.manager.add_child(proj)
-		proj.global_position = self.global_position
-		proj.launch()
+		var projectile = Projectiles.FireBall.duplicate().instantiate()
+		projectile.damage = self.damage
+		projectile.homing = false
+		projectile.speed = 100.
+		projectile.target = self.current_target
+		Game.manager.add_child(projectile)
+		projectile.global_position = self.global_position
+		projectile.launch()

@@ -2,17 +2,33 @@ class_name Weapon
 extends Item
 
 var current_target : Entity = null
-@export var damage : float = 3.
-@export var attack_speed : float = 1.
-@export var speed_modificator : float = 1.
-@export var attack_range : float = 30
 
 @onready var animation_player = get_node_or_null("AnimationPlayer")
+
+var attributes : Stats.WeaponAttributes
+var damage
+var crit_damage
+var crit_chance
+var attack_range
+var attack_speed
+
+func apply_attributes():
+	damage = attributes.damage.attribute_value
+	crit_damage = attributes.damage.attribute_value
+	crit_chance = attributes.damage.attribute_value
+	attack_range = attributes.damage.attribute_value
+	attack_speed = attributes.damage.attribute_value
+
+
+func _ready():
+	pass
+	#apply_attributes()
 
 func start_attack(target): # rename to start_attack
 	if animation_player:
 		animation_player.play("attack")
 		current_target = target
+
 
 func on_attack(): # rename to do_attack() || on_attack()
 	pass

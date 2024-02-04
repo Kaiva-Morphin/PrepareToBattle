@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Game="*res://src/Game.gd"
 Projectiles="*res://src/Projectiles.gd"
 Weapons="*res://Weapons.gd"
+Stats="*res://Stats.gd"
 
 [display]
 

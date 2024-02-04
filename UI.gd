@@ -48,19 +48,19 @@ func _process(_delta: float) -> void:
 				picked_node.collision.disabled = true
 				picked_node.in_inventory = true
 				add_to_bar(picked_node)
-			
-			var is_any_spawn_rect_has_mouse = false
-			for spawn_rect in spawn_rects:
-				if spawn_rect.get_global_rect().has_point(pos):
-					is_any_spawn_rect_has_mouse = true
-					break
-			if is_any_spawn_rect_has_mouse:
-				picked_node.in_inventory = false
-				picked_node.collision.disabled = false
 			else:
-				picked_node.collision.disabled = true
-				picked_node.in_inventory = true
-				add_to_bar(picked_node)
+				var is_any_spawn_rect_has_mouse = false
+				for spawn_rect in spawn_rects:
+					if spawn_rect.get_global_rect().has_point(pos):
+						is_any_spawn_rect_has_mouse = true
+						break
+				if is_any_spawn_rect_has_mouse:
+					picked_node.in_inventory = false
+					picked_node.collision.disabled = false
+				else:
+					picked_node.collision.disabled = true
+					picked_node.in_inventory = true
+					add_to_bar(picked_node)
 			$Prepare/Selector/Hint.hide()
 			picked_node = null
 	if picked_node:

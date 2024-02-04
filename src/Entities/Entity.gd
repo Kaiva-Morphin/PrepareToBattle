@@ -3,21 +3,19 @@ extends CharacterBody2D
 
 var in_inventory = false
 
-@export var specialisation : Node2D = null
 @export var weapon : Weapon = null
 
 @export var paused := true
 
-@export var hp : float = 100.
-@export var max_hp : float = 100.
-@export var speed : float = 50
 @export var target : Entity = null
-
 @export var team : Game.Team
+
+var attribute_container
+
+var current_hp
 
 @onready var collision = get_node("Collision")
 var current_state = Game.EntityState.seek
-
 
 func _ready():
 	var color
@@ -69,9 +67,11 @@ func state_sounds(state):
 func _on_state_changed(_new_state):
 	pass
 
+
+
 func take_damage(amount):
-	hp -= amount
-	if hp <= 0: death()
+	current_hp -= amount
+	if current_hp <= 0: death()
 	update_health()
 	_on_take_damage()
 
