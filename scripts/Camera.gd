@@ -25,8 +25,9 @@ func update_bounds():
 
 
 func _process(delta):
-	if Input.is_action_just_pressed("mwup"): target_zoom += 0.1
-	if Input.is_action_just_pressed("mwdn"): target_zoom -= 0.1
+	if !$"../UILayer/UI".is_inventory_open:
+		if Input.is_action_just_pressed("mwup"): target_zoom += 0.1
+		if Input.is_action_just_pressed("mwdn"): target_zoom -= 0.1
 	
 	self.zoom = lerp(self.zoom, Vector2(target_zoom, target_zoom), delta * follow_speed * 0.5)
 	self.position = target_position

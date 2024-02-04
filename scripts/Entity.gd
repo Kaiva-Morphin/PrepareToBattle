@@ -12,23 +12,50 @@ var in_inventory = false
 var character_attributes
 var attribute_container
 
-var current_hp = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.health)
-var speed = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.speed)
-var max_hp = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.health)
-var regeneration = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.health_regeneration)
+var current_hp
 
 @onready var collision = get_node("Collision")
 var current_state = Game.EntityState.seek
 
+@onready var animation_player = get_node_or_null("Animation")
+
+func reset():
+	self.pause()
+	target = null
+	current_state = Game.EntityState.seek
+	current_hp = attribute_container.get_attribute_or_null(Stats.AttributeType.health)
+	update_health()
+	weapon.stop()
+	if animation_player:
+		animation_player.play("RESET")
+
+func update_container():
+	attribute_container.force_update()
+	current_hp = attribute_container.get_attribute_or_null(Stats.AttributeType.health)
+	update_health()
+	weapon.apply_container_stats(self)
+	$EntityLabel/Level/Label.text = Stats.get_rarity_char(character_attributes.item_rarity)
+
+func generate_container():
+	attribute_container = Stats.AttributeContainer.new()
+	attribute_container.current_character = character_attributes
+	attribute_container.current_weapon = weapon.weapon_attributes
+	attribute_container.force_update()
+	current_hp = attribute_container.get_attribute_or_null(Stats.AttributeType.health)
+	update_health()
+	weapon.apply_container_stats(self)
+	$EntityLabel/Level/Label.text = Stats.get_rarity_char(character_attributes.item_rarity)
 
 func set_weapon(e : Weapon):
 	set_weapon_noupdate(e)
 	attribute_container.override_weapon_attributes(e.weapon_attributes)
 
+
 func set_weapon_noupdate(e : Weapon):
 	for c in $Mirror/Weapon.get_children():
 		$Mirror/Weapon.remove_child(c)
 		c.queue_free()
+	weapon = e
 	$Mirror/Weapon.add_child(e)
 	
 
@@ -53,6 +80,7 @@ func _ready():
 
 func pause():
 	paused = true
+	$Walk.playing = false
 	$UpdateTargetPosition.stop()
 	$UpdateTargets.stop()
 
@@ -118,26 +146,27 @@ func _on_update_targets_timeout():
 		#$UpdateTargets.start()
 
 func _physics_process(_delta): # move torwards target (if state)
-	var direction = Vector2.ZERO
-	if current_state == Game.EntityState.seek and target and is_instance_valid(target):
-		var near = target.position.distance_squared_to(self.position) < attribute_container.get_attribute_or_null(Stats.AttributeType.attack_range) ** 2
-		if near:
-			current_state = Game.EntityState.near
-			state_sounds(current_state)
-			_on_state_changed(current_state)
-			if target.position.x - self.position.x > 0:
+	if !paused:
+		var direction = Vector2.ZERO
+		if current_state == Game.EntityState.seek and target and is_instance_valid(target):
+			var near = target.position.distance_squared_to(self.position) < attribute_container.get_attribute_or_null(Stats.AttributeType.attack_range) ** 2
+			if near:
+				current_state = Game.EntityState.near
+				state_sounds(current_state)
+				_on_state_changed(current_state)
+				if target.position.x - self.position.x > 0:
+					$Mirror.scale.x = 1
+				else:
+					$Mirror.scale.x = -1
+			else:
+				direction = to_local($NavigationAgent2D.get_next_path_position()).normalized()
+		if direction:
+			if direction.x > 0:
 				$Mirror.scale.x = 1
 			else:
 				$Mirror.scale.x = -1
-		else:
-			direction = to_local($NavigationAgent2D.get_next_path_position()).normalized()
-	if direction:
-		if direction.x > 0:
-			$Mirror.scale.x = 1
-		else:
-			$Mirror.scale.x = -1
-	velocity = direction * speed
-	move_and_slide()
+		velocity = direction * attribute_container.get_attribute_or_null(Stats.AttributeType.speed)
+		move_and_slide()
 
 func _process(_delta: float) -> void:
 	var debug_text = str(self.current_state) + "\n"
@@ -148,7 +177,7 @@ func _process(_delta: float) -> void:
 	$DEBUG.text = debug_text
 
 func update_health():
-	$EntityLabel/Level/Health.value = current_hp / max_hp * 100
+	$EntityLabel/Level/Health.value = current_hp / attribute_container.get_attribute_or_null(Stats.AttributeType.health) * 100
 
 func _on_update_target_position_timeout():
 	if target and is_instance_valid(target):
@@ -158,3 +187,5 @@ func _on_update_target_position_timeout():
 func death():
 	self.queue_free()
 
+func _on_regenerate_timeout() -> void:
+	current_hp += attribute_container.get_attribute_or_null(Stats.AttributeType.health_regeneration)

@@ -9,6 +9,7 @@ var mappool = [
 @onready var ui = $UILayer/UI
 
 func next_level():
+	Game.current_state = Game.GameState.prepare
 	var prev_map = get_node_or_null("map")
 	if prev_map:
 		remove_child(prev_map)
@@ -26,10 +27,11 @@ func next_level():
 	for i in range(number_of_enemies):
 		var rect : Rect2 = spawn_rects.pick_random().get_global_rect()
 		var spawn_pos = rect.position + Vector2(randf() * rect.size.x, randf() * rect.size.y)
-		var enemy : Entity = Game.character.instantiate()
+		var enemy : Entity = get_random_binded_man()
 		enemy.team = Game.Team.enemy
 		add_child(enemy)
 		enemy.global_position = spawn_pos
+		
 
 func _on_check_alive_timer_timeout() -> void:
 	if Game.current_state == Game.GameState.inbattle:
@@ -46,8 +48,9 @@ func _on_check_alive_timer_timeout() -> void:
 			print("GAME OVER!")
 		if len(enemy) == 0:
 			for p in player:
-				p.pause()
+				p.reset()
 				ui.add_to_bar(p)
+			Game.difficulty *= 2
 			next_level()
 	else:
 		$CheckAlive.stop()
@@ -89,3 +92,11 @@ func _on_attack_button_pressed() -> void:
 			$CheckAlive.start()
 
 
+func get_random_binded_man() -> Entity:
+	var man = Game.character.instantiate()
+	var weapon = Game.fists.instantiate()
+	weapon.weapon_attributes = Stats.get_random_weapon_attributes_architype(Stats.WeaponArchiType.Fists)
+	man.character_attributes = Stats.get_random_character_attributes()
+	man.set_weapon_noupdate(weapon)
+	man.generate_container()
+	return man

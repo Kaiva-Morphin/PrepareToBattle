@@ -100,7 +100,9 @@ func _bar_cell_gui_input(event: InputEvent, e : Entity) -> void: # for picking, 
 				inventory_selected_character = e
 				update_inventory_character_preview()
 	else: # check for put
+		
 		if event is InputEventScreenDrag:
+			
 			if !picked_node:
 				var rect = squad_selector.get_global_rect()
 				#rect.position -= Vector2(2, 2)
@@ -255,14 +257,17 @@ func _on_weapon_slot_gui_input(event: InputEvent) -> void:
 	if item_selected(event, weapon_slot):
 		var item = weapon_slot.get_item_or_null()
 		if item:
-			var weapon_node = inventory_selected_character.get_node("Mirror/Weapon")
-			for w in weapon_node.get_children():
-				weapon_node.remove_child(w)
-				w.queue_free()
+			#var weapon_node = inventory_selected_character.get_node("Mirror/Weapon")
+			#for w in weapon_node.get_children():
+				#weapon_node.remove_child(w)
+				#w.queue_free()
 			var new_weapon = item.duplicate()
+			new_weapon.weapon_attributes = item.weapon_attributes
 			new_weapon.scale = Vector2.ONE
 			new_weapon.position = Vector2.ZERO
-			weapon_node.add_child(new_weapon)
+			inventory_selected_character.set_weapon(new_weapon)
+			#weapon_node.add_child(new_weapon)
+			
 			update_inventory_character_preview()
 		else:
 			print("ZXC!")
@@ -291,6 +296,9 @@ func update_inventory_character_preview():
 			update_inventory_character_preview()
 		else:
 			$Prepare/Inventory/Hint.show()
+	if inventory_selected_character:
+		inventory_selected_character.attribute_container.force_update()
+		$Prepare/Inventory/Stats/RichTextLabel.text = inventory_selected_character.attribute_container.get_as_rich_text()
 	update_slot_tooltip(head_slot)
 	update_slot_tooltip(chest_slot)
 	update_slot_tooltip(legs_slot)

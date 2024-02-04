@@ -20,7 +20,7 @@ func launch():
 		self.linear_velocity = (target.global_position - self.global_position).normalized() * speed
 	
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if homing:
 		if target and is_instance_valid(target):
 			self.linear_velocity = (target.global_position - self.global_position).normalized() * speed
