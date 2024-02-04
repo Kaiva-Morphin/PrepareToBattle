@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://cewooon5wo48q"]
 
-[ext_resource type="PackedScene" uid="uid://dctt7dqkpf2r4" path="res://src/Weapons/Weapon.tscn" id="1_abv0o"]
+[ext_resource type="PackedScene" uid="uid://dctt7dqkpf2r4" path="res://scripts/Weapon.tscn" id="1_abv0o"]
 [ext_resource type="Texture2D" uid="uid://dsijsml81tktt" path="res://src/Weapons/Shield.png" id="2_cjqwr"]
 
 [sub_resource type="Animation" id="Animation_s4stn"]

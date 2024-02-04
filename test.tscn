@@ -1,13 +1,13 @@
 [gd_scene load_steps=16 format=3 uid="uid://djh5exescsv1a"]
 
-[ext_resource type="Script" path="res://Manager.gd" id="1_8idik"]
-[ext_resource type="Script" path="res://UI.gd" id="2_6v2mw"]
+[ext_resource type="Script" path="res://scripts/Manager.gd" id="1_8idik"]
+[ext_resource type="Script" path="res://scripts/UI.gd" id="2_6v2mw"]
 [ext_resource type="Texture2D" uid="uid://dqoi61aqr2dmp" path="res://src/sprites/UI/InventoryButton.png" id="3_hglmc"]
 [ext_resource type="Texture2D" uid="uid://t6eqsvx88avo" path="res://src/sprites/UI/Map.png" id="4_y8iw3"]
 [ext_resource type="Texture2D" uid="uid://c3k0xgnildyby" path="res://src/sprites/UI/Attack.png" id="5_1kndo"]
 [ext_resource type="Texture2D" uid="uid://clgga7xa8i5xp" path="res://src/sprites/UI/InventoryBg.png" id="6_qyjek"]
 [ext_resource type="Texture2D" uid="uid://f1kacbvcjiej" path="res://src/sprites/UI/InventorySlot.png" id="7_162mm"]
-[ext_resource type="Script" path="res://Slot.gd" id="8_vi10d"]
+[ext_resource type="Script" path="res://scripts/Slot.gd" id="8_vi10d"]
 [ext_resource type="TileSet" uid="uid://c0ef875kmeoy3" path="res://maps/TileSet.tres" id="9_wsegf"]
 [ext_resource type="PackedScene" uid="uid://cvrcwr7kl6258" path="res://src/Entities/Man.tscn" id="10_utph3"]
 

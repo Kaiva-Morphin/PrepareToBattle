@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://c2fuqdp8otti2"
-path="res://.godot/imported/Pixel.ttf-42d5907c9cf7c30243756a124bc08535.fontdata"
+uid="uid://cc85gqco5llso"
+path="res://.godot/imported/visitor2.ttf-0c7c423491dd73b87585d25833a16155.fontdata"
 
 [deps]
 
-source_file="res://src/fonts/pixel/Pixel.ttf"
-dest_files=["res://.godot/imported/Pixel.ttf-42d5907c9cf7c30243756a124bc08535.fontdata"]
+source_file="res://src/assets/fonts/visitor-brk/visitor2.ttf"
+dest_files=["res://.godot/imported/visitor2.ttf-0c7c423491dd73b87585d25833a16155.fontdata"]
 
 [params]
 

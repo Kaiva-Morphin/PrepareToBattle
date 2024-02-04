@@ -17,10 +17,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Game="*res://src/Game.gd"
-Projectiles="*res://src/Projectiles.gd"
-Weapons="*res://Weapons.gd"
-Stats="*res://Stats.gd"
+Game="*res://scripts/Game.gd"
+Projectiles="*res://scripts/Projectiles.gd"
+Weapons="*res://scripts/Weapons.gd"
+Stats="*res://scripts/Stats.gd"
 
 [display]
 

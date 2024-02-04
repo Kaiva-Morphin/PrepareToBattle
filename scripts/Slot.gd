@@ -3,8 +3,7 @@ extends Panel
 
 @export var specific_type : Game.ItemType = Game.ItemType.any
 @export var wearable_slot : bool = false
-func _ready() -> void:
-	self.tooltip_text = "[empty]"
+
 
 func get_item_or_null() -> Item:
 	for node in get_children():
@@ -16,7 +15,11 @@ func get_item_or_null() -> Item:
 
 func _make_custom_tooltip(for_text):
 	var label = Label.new()
+	#RichTextLabel.update_c
+
+	
 	#label.text = tooltip_text
+	label.text = "red"
 	var text = ""
 	var item = get_item_or_null()
 	if item:
@@ -47,6 +50,5 @@ func _make_custom_tooltip(for_text):
 				text = "[leg_armor slot]"
 			Game.ItemType.accsessory:
 				text = "[accsessory slot]"
-	
-	label.text = text
+	label.text = for_text + "\n" + text
 	return label

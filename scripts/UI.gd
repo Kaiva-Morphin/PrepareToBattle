@@ -121,9 +121,6 @@ var inventory_selected_character : Entity = null
 var is_inventory_open = false
 func _ready():
 	is_inventory_open = $Prepare/Inventory.visible
-	add_item(Weapons.FireWard.instantiate().duplicate())
-	add_item(Weapons.Fists.instantiate().duplicate())
-	add_item(Weapons.FireWard.instantiate().duplicate())
 	#for entity in get_tree().get_nodes_in_group("entity"):
 	#	call_deferred("add_to_bar", entity)
 
@@ -179,6 +176,7 @@ func item_selected(event: InputEvent, slot: Slot):
 func try_swap_slots(_picked_item_slot : Slot, slot : Slot) -> bool:
 	if _picked_item_slot == slot:
 		picked_item.reparent(slot)
+		update_slot_tooltip(slot)
 		picked_item.position = slot_offset
 		picked_item_slot = null
 		picked_item = null
@@ -186,15 +184,18 @@ func try_swap_slots(_picked_item_slot : Slot, slot : Slot) -> bool:
 	var item = slot.get_item_or_null()
 	if !inventory_selected_character and (_picked_item_slot.wearable_slot or slot.wearable_slot): return false
 	if slot.specific_type == picked_item.item_type or slot.specific_type == Game.ItemType.any:
-		if item:
+		if item: # swap
 			if _picked_item_slot.specific_type == item.item_type or _picked_item_slot.specific_type == Game.ItemType.any:
 				picked_item.reparent(slot)
+				update_slot_tooltip(slot)
 				picked_item.position = slot_offset
 				item.reparent(inventory_bg)
+				update_slot_tooltip(picked_item_slot)
 				picked_item = item
 				return true
 		else:
 			picked_item.reparent(slot)
+			update_slot_tooltip(slot)
 			picked_item.position = slot_offset
 			picked_item = null
 			if !picked_item_slot.wearable_slot:
@@ -213,11 +214,19 @@ func add_item(item: Item):
 	else:
 		slot.add_child(item)
 	item.position = slot_offset
-	inventory_container.add_child(slot)
-
+	$Prepare/Inventory/ScrollContainer/GridContainer.add_child(slot)
+	update_slot_tooltip(slot)
 	slot.connect("gui_input", func(event): item_selected(event, slot))
 
-
+func update_slot_tooltip(slot):
+	if slot:
+		var c = slot.get_child_count()
+		if c > 0:
+			var item = slot.get_child(0)
+			if item is Weapon:
+				if item.weapon_attributes:
+					
+					slot.tooltip_text = item.weapon_attributes.as_text()
 
 @onready var weapon_slot : Slot = $Prepare/Inventory/WeaponSlot
 @onready var head_slot : Slot = $Prepare/Inventory/HeadSlot
@@ -270,6 +279,7 @@ func update_inventory_character_preview():
 		var weapon_node = inventory_selected_character.get_node("Mirror/Weapon")
 		if weapon_node.get_child_count() > 0:
 			var weapon = weapon_node.get_child(0).duplicate()
+			weapon.weapon_attributes = weapon_node.get_child(0).weapon_attributes
 			weapon_slot.add_child(weapon)
 			weapon.scale = Vector2.ONE * 2
 			weapon.position = slot_offset
@@ -281,7 +291,13 @@ func update_inventory_character_preview():
 			update_inventory_character_preview()
 		else:
 			$Prepare/Inventory/Hint.show()
-
+	update_slot_tooltip(head_slot)
+	update_slot_tooltip(chest_slot)
+	update_slot_tooltip(legs_slot)
+	update_slot_tooltip(accessory1_slot)
+	update_slot_tooltip(accessory2_slot)
+	update_slot_tooltip(weapon_slot)
+	
 
 func _on_inventory_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:

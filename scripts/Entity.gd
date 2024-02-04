@@ -9,13 +9,29 @@ var in_inventory = false
 
 @export var target : Entity = null
 @export var team : Game.Team
-
+var character_attributes
 var attribute_container
 
-var current_hp
+var current_hp = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.health)
+var speed = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.speed)
+var max_hp = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.health)
+var regeneration = Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.health_regeneration)
 
 @onready var collision = get_node("Collision")
 var current_state = Game.EntityState.seek
+
+
+func set_weapon(e : Weapon):
+	set_weapon_noupdate(e)
+	attribute_container.override_weapon_attributes(e.weapon_attributes)
+
+func set_weapon_noupdate(e : Weapon):
+	for c in $Mirror/Weapon.get_children():
+		$Mirror/Weapon.remove_child(c)
+		c.queue_free()
+	$Mirror/Weapon.add_child(e)
+	
+
 
 func _ready():
 	var color
@@ -85,7 +101,7 @@ func _on_update_targets_timeout():
 		var new_target = Game.manager.get_closest_oppositive_team_member(self.position, self.team)
 		if new_target:
 			target = new_target
-			if target.position.distance_squared_to(self.position) > weapon.attack_range ** 2:
+			if target.position.distance_squared_to(self.position) > attribute_container.get_attribute_or_null(Stats.AttributeType.attack_range) ** 2:
 				current_state = Game.EntityState.seek
 				state_sounds(current_state)
 				_on_state_changed(current_state)
@@ -104,7 +120,7 @@ func _on_update_targets_timeout():
 func _physics_process(_delta): # move torwards target (if state)
 	var direction = Vector2.ZERO
 	if current_state == Game.EntityState.seek and target and is_instance_valid(target):
-		var near = target.position.distance_squared_to(self.position) < weapon.attack_range ** 2
+		var near = target.position.distance_squared_to(self.position) < attribute_container.get_attribute_or_null(Stats.AttributeType.attack_range) ** 2
 		if near:
 			current_state = Game.EntityState.near
 			state_sounds(current_state)
@@ -132,7 +148,7 @@ func _process(_delta: float) -> void:
 	$DEBUG.text = debug_text
 
 func update_health():
-	$EntityLabel/Level/Health.value = hp / max_hp * 100
+	$EntityLabel/Level/Health.value = current_hp / max_hp * 100
 
 func _on_update_target_position_timeout():
 	if target and is_instance_valid(target):
