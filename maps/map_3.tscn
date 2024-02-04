@@ -24,6 +24,7 @@ offset_right = -144.0
 offset_bottom = 224.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Control2" type="Control" parent="PlayerSpawners"]
 layout_mode = 3
@@ -38,6 +39,7 @@ offset_right = 224.0
 offset_bottom = 224.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="EnemySpawners" type="Node2D" parent="."]
 
@@ -55,6 +57,7 @@ offset_right = -131.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Control4" type="Control" parent="EnemySpawners"]
 layout_mode = 3
@@ -69,6 +72,7 @@ offset_right = 233.0
 offset_bottom = -163.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Control2" type="Control" parent="EnemySpawners"]
 custom_minimum_size = Vector2(100, 100)
@@ -84,3 +88,4 @@ offset_right = 232.0
 offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true

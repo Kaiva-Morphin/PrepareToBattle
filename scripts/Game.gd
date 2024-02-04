@@ -19,9 +19,7 @@ func _ready() -> void: # start game!
 			#man.weapon.weapon_attributes.lifesteal.attribute_value = 100
 			man.update_container()
 			add_child(man)
-			
 			ui.call_deferred("add_to_bar", man)
-		
 		for i in range(50):
 			var weapon = fists.instantiate()
 			weapon.weapon_attributes = Stats.get_random_weapon_attributes_architype(Stats.WeaponArchiType.Fists)
@@ -67,9 +65,6 @@ func _ready() -> void: # start game!
 		#weapon = fireward.instantiate()
 		#weapon.weapon_attributes = Stats.get_random_weapon_attributes_architype(Stats.WeaponArchiType.Fists)
 		#ui.add_item(weapon)
-		
-		
-		
 		manager.call_deferred("next_level")
 		
 	else:
