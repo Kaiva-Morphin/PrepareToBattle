@@ -1,7 +1,7 @@
 class_name Entity
 extends CharacterBody2D
 
-
+var in_inventory = false
 
 @export var specialisation : Node2D = null
 @export var weapon : Weapon = null
@@ -17,6 +17,7 @@ extends CharacterBody2D
 
 @onready var collision = get_node("Collision")
 var current_state = Game.EntityState.seek
+
 
 func _ready():
 	var color
@@ -51,9 +52,19 @@ func init():
 	weapon = get_node("Mirror/Weapon").get_child(0)
 	if !weapon:
 		weapon = preload("res://src/Weapons/Fists.tscn").instantiate()
+	state_sounds(current_state)
 	_on_state_changed(current_state)
 
-
+func state_sounds(state):
+	match state:
+		Game.EntityState.seek:
+			if !$Walk.playing:
+				$Walk.playing = true
+				$Walk.pitch_scale = .9 + randf() * 0.2
+				$Walk.volume_db = -0.3 + randf() * 0.6
+		_:
+			if $Walk.playing:
+				$Walk.playing = false
 
 func _on_state_changed(_new_state):
 	pass
@@ -67,6 +78,8 @@ func take_damage(amount):
 func _on_take_damage():
 	pass
 
+
+
 func _on_update_targets_timeout():
 	if Game.manager:
 		var new_target = Game.manager.get_closest_oppositive_team_member(self.position, self.team)
@@ -74,7 +87,9 @@ func _on_update_targets_timeout():
 			target = new_target
 			if target.position.distance_squared_to(self.position) > weapon.attack_range ** 2:
 				current_state = Game.EntityState.seek
+				state_sounds(current_state)
 				_on_state_changed(current_state)
+			state_sounds(current_state)
 			_on_state_changed(current_state) # update weapon target
 			if target.position.x - self.position.x > 0:
 				$Mirror.scale.x = 1
@@ -82,6 +97,7 @@ func _on_update_targets_timeout():
 				$Mirror.scale.x = -1
 		else:
 			current_state = Game.EntityState.idle
+			state_sounds(current_state)
 			_on_state_changed(current_state)
 		#$UpdateTargets.start()
 
@@ -91,6 +107,7 @@ func _physics_process(_delta): # move torwards target (if state)
 		var near = target.position.distance_squared_to(self.position) < weapon.attack_range ** 2
 		if near:
 			current_state = Game.EntityState.near
+			state_sounds(current_state)
 			_on_state_changed(current_state)
 			if target.position.x - self.position.x > 0:
 				$Mirror.scale.x = 1
@@ -108,13 +125,10 @@ func _physics_process(_delta): # move torwards target (if state)
 
 func _process(_delta: float) -> void:
 	var debug_text = str(self.current_state) + "\n"
-	
 	if target and is_instance_valid(target):
 		debug_text += str(self.target.name) + "\n"
-	
 	if weapon and is_instance_valid(weapon):
 		debug_text += str(self.weapon.attack_range) + "\n"
-	
 	$DEBUG.text = debug_text
 
 func update_health():

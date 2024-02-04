@@ -1,6 +1,56 @@
 extends Node2D
 
+var mappool = [
+	preload("res://maps/map_1.tscn"),
+	preload("res://maps/map_2.tscn"),
+	preload("res://maps/map_3.tscn"),
+]
+@onready var camera = $Camera
+@onready var ui = $UILayer/UI
 
+func next_level():
+	var prev_map = get_node_or_null("map")
+	if prev_map:
+		remove_child(prev_map)
+		prev_map.queue_free()
+	var map = mappool.pick_random().instantiate()
+	map.name = "map"
+	self.add_child(map)
+	camera.update_bounds()
+	ui.update_spawn_rects()
+	ui.prepare()
+	$CheckAlive.start()
+	# spawn enemies
+	var number_of_enemies : int = round(Game.difficulty * Game.difficulty_enemy_multipler)
+	var spawn_rects = get_node("map/EnemySpawners").get_children()
+	for i in range(number_of_enemies):
+		var rect : Rect2 = spawn_rects.pick_random().get_global_rect()
+		var spawn_pos = rect.position + Vector2(randf() * rect.size.x, randf() * rect.size.y)
+		var enemy : Entity = Game.character.instantiate()
+		enemy.team = Game.Team.enemy
+		add_child(enemy)
+		enemy.global_position = spawn_pos
+
+func _on_check_alive_timer_timeout() -> void:
+	if Game.current_state == Game.GameState.inbattle:
+		var enemy = []
+		var player = []
+		for e : Entity in get_tree().get_nodes_in_group("entity"):
+			if !e.in_inventory:
+				match e.team:
+					Game.Team.player:
+						player.append(e)
+					Game.Team.enemy:
+						enemy.append(e)
+		if len(player) == 0:
+			print("GAME OVER!")
+		if len(enemy) == 0:
+			for p in player:
+				p.pause()
+				ui.add_to_bar(p)
+			next_level()
+	else:
+		$CheckAlive.stop()
 
 
 func get_closest_oppositive_team_member(pos : Vector2, team : Game.Team) -> Node2D:
@@ -30,26 +80,12 @@ func get_closest_oppositive_team_member(pos : Vector2, team : Game.Team) -> Node
 			pass
 	return null
 
+func _on_attack_button_pressed() -> void:
+	for entity in get_tree().get_nodes_in_group("entity"):
+		if !entity.in_inventory:
+			entity.unpause()
+			Game.current_state = Game.GameState.inbattle
+			ui.in_battle()
+			$CheckAlive.start()
 
-#
-#var picked_node : Node2D = null
-#func _process(_delta: float) -> void:
-	#var pos = get_global_mouse_position()
-	#if Input.is_action_just_pressed("lmb"):
-		#if picked_node:
-			#picked_node = null
-		#else:
-			#picked_node = null
-			#if space_state:
-				#var query = PhysicsRayQueryParameters2D.create(pos - Vector2(20, 20), pos + Vector2(20, 20))
-				#var result = space_state.intersect_ray(query)
-				#if result:
-					#var col = result.collider
-					#if col.is_in_group("entity"):
-						#picked_node = col
-	#if picked_node:
-		#picked_node.position = pos
-	##var pos = 
-	##var c = $PICKER/Ray.get_collider()
-	#
-#
+

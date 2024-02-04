@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://dl8rc8ryu850g"]
+[gd_scene load_steps=8 format=3 uid="uid://dl8rc8ryu850g"]
 
 [ext_resource type="Script" path="res://src/Entities/Entity.gd" id="1_wd8r8"]
 [ext_resource type="Texture2D" uid="uid://wf2wxgguxpf3" path="res://src/sprites/levellabel.png" id="2_57mqj"]
 [ext_resource type="FontFile" uid="uid://cwp7h6bubwify" path="res://src/fonts/visitor-brk/visitor1.ttf" id="3_jjtf8"]
 [ext_resource type="Texture2D" uid="uid://ldanhp1iacqk" path="res://src/sprites/healthlabel.png" id="4_srrrc"]
 [ext_resource type="Texture2D" uid="uid://gsv8yho6nxie" path="res://src/sprites/healthlabel_progress.png" id="5_surlc"]
+[ext_resource type="AudioStream" uid="uid://dyn0jku8dkoqw" path="res://src/sound/walk.mp3" id="6_eqdc8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6vtff"]
 radius = 5.09902
@@ -26,7 +27,7 @@ wait_time = 0.1
 [node name="UpdateTargets" type="Timer" parent="."]
 wait_time = 0.5
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." groups=["entity"]]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_postprocessing = 1
 debug_enabled = true
 debug_use_custom = true
@@ -92,13 +93,16 @@ texture_progress = ExtResource("5_surlc")
 texture_progress_offset = Vector2(1, 1)
 
 [node name="DEBUG" type="Label" parent="."]
-visible = false
 offset_left = -30.0
 offset_top = -40.0
 offset_right = 56.0
 offset_bottom = -17.0
 scale = Vector2(0.505, 0.505)
 text = "DEBUG"
+
+[node name="Walk" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_eqdc8")
+volume_db = 0.3
 
 [connection signal="timeout" from="UpdateTargetPosition" to="." method="_on_update_target_position_timeout"]
 [connection signal="timeout" from="UpdateTargets" to="." method="_on_update_targets_timeout"]

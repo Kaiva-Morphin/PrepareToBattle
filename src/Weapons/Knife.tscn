@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://rnlho334mv28"]
+
+[ext_resource type="PackedScene" uid="uid://dctt7dqkpf2r4" path="res://src/Weapons/Weapon.tscn" id="1_yyasl"]
+[ext_resource type="Texture2D" uid="uid://bt0ac2d3hvrjw" path="res://src/Weapons/Knife.png" id="2_1y3k4"]
+
+[node name="Knife" instance=ExtResource("1_yyasl")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="0"]
+
+[node name="Knife" type="Sprite2D" parent="." index="1"]
+texture = ExtResource("2_1y3k4")

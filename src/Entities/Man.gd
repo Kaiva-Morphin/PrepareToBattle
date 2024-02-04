@@ -17,7 +17,6 @@ func _on_state_changed(new_state):
 
 func _on_take_damage():
 	var tween = create_tween()
-	
 	tween.tween_property($Mirror, "modulate", Color.RED, 0.1)
 	tween.connect("finished", func(): $Mirror.modulate = Color.WHITE)
 	#$Mirror/Sprite2D.modu
