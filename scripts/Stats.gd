@@ -372,7 +372,6 @@ class WeaponAttributes extends ItemAttributes:
 		stats_text += "   {}: {}%\n".format([crit_damage.get_string(), snapped(crit_damage.attribute_value * 100, 0.01)], "{}")
 		stats_text += "   {}: {}\n".format([lifesteal.get_string(), snapped(lifesteal.attribute_value, 0.01)], "{}")
 		stats_text += "   {}: {}%\n".format([true_strike.get_string(), snapped(true_strike.attribute_value * 100, 0.01)], "{}")
-		
 		return get_as_rich_text_header() + "\n" + stats_text + "\n" + get_as_rich_text_bottom()
 	
 	
@@ -733,24 +732,24 @@ class AttributeContainer:
 				#_: result_attributes[type] = Stats.get_base_attribute_value_for_multiply(type) * multiplier; push_warning("unregistred stat passes " + str(type))
 
 func get_random_armor_attributes() -> ArmorAttributes:
-	var armor_attributes : ArmorAttributes = ArmorAttributes.new()
-	armor_attributes.roll_base_attributes()
-	armor_attributes.item_rarity = get_random_rarity()
-	armor_attributes.add_or_reroll_additional_attributes()
-	return armor_attributes
+	var attributes : ArmorAttributes = ArmorAttributes.new()
+	attributes.roll_base_attributes()
+	attributes.item_rarity = get_random_rarity()
+	attributes.add_or_reroll_additional_attributes()
+	return attributes
 
 func get_random_weapon_attributes_architype(type: Stats.WeaponArchiType) -> WeaponAttributes:
-	var weapon_attributes : WeaponAttributes = get_weapon_architype_base_attributes_with_random_rarity(type)
-	weapon_attributes.roll_base_attributes()
-	weapon_attributes.add_or_reroll_additional_attributes()
-	return weapon_attributes
+	var attributes : WeaponAttributes = get_weapon_architype_base_attributes_with_random_rarity(type)
+	attributes.roll_base_attributes()
+	attributes.add_or_reroll_additional_attributes()
+	return attributes
 
 func get_random_character_attributes() -> CharacterAttributes:
-	var character_attributes : CharacterAttributes = CharacterAttributes.new()
-	character_attributes.roll_base_attributes()
-	character_attributes.item_rarity = get_random_rarity()
-	character_attributes.add_or_reroll_additional_attributes()
-	return character_attributes
+	var attributes : CharacterAttributes = CharacterAttributes.new()
+	attributes.roll_base_attributes()
+	attributes.item_rarity = get_random_rarity()
+	attributes.add_or_reroll_additional_attributes()
+	return attributes
 
 func get_random_item_attributes() -> ItemAttributes:
 	var item_attributes : ItemAttributes = ItemAttributes.new()

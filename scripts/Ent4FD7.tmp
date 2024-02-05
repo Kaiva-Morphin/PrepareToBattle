@@ -18,7 +18,7 @@ var in_inventory = false
 
 @export var target : Entity = null
 @export var team : Game.Team
-var character_attributes
+var attributes
 var attribute_container
 
 var current_hp
@@ -43,17 +43,17 @@ func update_container():
 	current_hp = attribute_container.get_attribute_or_null(Stats.AttributeType.health)
 	update_health()
 	weapon.apply_container_stats(self)
-	$EntityLabel/Level/Label.text = Stats.get_rarity_char(character_attributes.item_rarity)
+	$EntityLabel/Level/Label.text = Stats.get_rarity_char(attributes.item_rarity)
 
 func generate_container():
 	attribute_container = Stats.AttributeContainer.new()
-	attribute_container.current_character = character_attributes
+	attribute_container.current_character = attributes
 	attribute_container.current_weapon = weapon.weapon_attributes
 	attribute_container.force_update()
 	current_hp = attribute_container.get_attribute_or_null(Stats.AttributeType.health)
 	update_health()
 	weapon.apply_container_stats(self)
-	$EntityLabel/Level/Label.text = Stats.get_rarity_char(character_attributes.item_rarity)
+	$EntityLabel/Level/Label.text = Stats.get_rarity_char(attributes.item_rarity)
 
 func set_weapon(e : Weapon):
 	set_weapon_noupdate(e)

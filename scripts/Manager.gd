@@ -24,6 +24,7 @@ var map_textures = [
 @onready var ui = $UILayer/UI
 
 func next_level():
+	Game.stages_passed += 1
 	Game.current_state = Game.GameState.prepare
 	for node in get_tree().get_nodes_in_group("projectile"): node.despawn()
 	var prev_map = get_node_or_null("map")
@@ -39,9 +40,10 @@ func next_level():
 	self.add_child(map)
 	camera.update_bounds()
 	ui.update_spawn_rects()
-	ui.prepare()
+	
 	$CheckAlive.start()
 	# spawn enemies
+	Game.difficulty = Game.stages_passed ** 1.5
 	var number_of_enemies : int = round(Game.difficulty * Game.difficulty_enemy_multipler)
 	var spawn_rects = get_node("map/EnemySpawners").get_children()
 	for i in range(number_of_enemies):
@@ -51,6 +53,122 @@ func next_level():
 		enemy.team = Game.Team.enemy
 		add_child(enemy)
 		enemy.global_position = spawn_pos
+	ui.prepare()
+	chest()
+
+func _ready() -> void:
+	#chest()
+	pass
+
+var chest_closed = false
+func chest():
+	chest_closed = true
+	$UILayer/UI/Prepare/Selector.hide()
+	$UILayer/UI/Chest/ChestBackground/ChestAnim.play("RESET")
+	$UILayer/UI/Chest/ChestBackground/SpinnerAnim.play("spinner")
+	$UILayer/UI/Chest.show()
+
+
+var chest_items = 0
+func _process(delta: float) -> void:
+	if Input.is_key_pressed(KEY_SPACE) || Input.is_action_just_pressed("lmb"):
+		if chest_closed:
+			chest_closed = false
+			$UILayer/UI/Chest/ChestBackground/ChestAnim.play("open")
+			
+			var accessory_count = Stats.ValueDistribution.new(1., 5.).get_random_value()
+			var weapon_count = Stats.ValueDistribution.new(1., 5.).get_random_value()
+			var armor_count = Stats.ValueDistribution.new(1., 5.).get_random_value()
+			var character_chance = 100.
+			var potion_chance = 100.
+			var card_chance = 30.
+			var has_potion = Stats.ValueDistribution.new(0., 100.).get_random_value() < card_chance
+			var has_character = Stats.ValueDistribution.new(0., 100.).get_random_value() < character_chance
+			var has_card = Stats.ValueDistribution.new(0., 100.).get_random_value() < character_chance
+			# armor -> weapon -> potion -> character -> card
+			await get_tree().create_timer(2.5).timeout
+			$UILayer/UI/Chest/ChestBackground/Card.show()
+			
+			
+			for a in range(accessory_count):
+				for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
+					$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
+					n.queue_free()
+				$UILayer/UI/Chest/ChestBackground/CollectedItem.play()
+				var item = get_random_accessory()
+				var preview = item.duplicate()
+				preview.scale = Vector2.ONE * 5
+				ui.add_item(item)
+				$UILayer/UI/Chest/ChestBackground/Card/Message.text = item.attributes.as_rich_text()
+				$UILayer/UI/Chest/ChestBackground/Card/Preview.add_child(preview)
+				await $UILayer/UI/Chest/ChestBackground/Card.pressed
+			
+			for a in range(armor_count):
+				for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
+					$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
+					n.queue_free()
+				$UILayer/UI/Chest/ChestBackground/CollectedItem.play()
+				var item = get_random_armor()
+				var preview = item.duplicate()
+				preview.scale = Vector2.ONE * 5
+				ui.add_item(item)
+				$UILayer/UI/Chest/ChestBackground/Card/Message.text = item.attributes.as_rich_text()
+				$UILayer/UI/Chest/ChestBackground/Card/Preview.add_child(preview)
+				await $UILayer/UI/Chest/ChestBackground/Card.pressed
+			
+			for w in range(weapon_count):
+				for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
+					$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
+					n.queue_free()
+				$UILayer/UI/Chest/ChestBackground/CollectedItem.play()
+				var item = get_random_weapon()
+				var preview = item.duplicate()
+				preview.scale = Vector2.ONE * 5
+				ui.add_item(item)
+				$UILayer/UI/Chest/ChestBackground/Card/Message.text = item.attributes.as_rich_text()
+				$UILayer/UI/Chest/ChestBackground/Card/Preview.add_child(preview)
+				await $UILayer/UI/Chest/ChestBackground/Card.pressed
+			
+			if has_potion:
+				for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
+					$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
+					n.queue_free()
+				var item = get_random_potion()
+				var preview = item.duplicate()
+				ui.potion_to_bar(item)
+				$UILayer/UI/Chest/ChestBackground/Card/Message.text = item.as_rich_text()
+				$UILayer/UI/Chest/ChestBackground/Card/Preview.add_child(preview)
+				$UILayer/UI/Chest/ChestBackground/CollectedItem.play()
+				await $UILayer/UI/Chest/ChestBackground/Card.pressed
+			
+			if has_character:
+				for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
+					$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
+					n.queue_free()
+				$UILayer/UI/Chest/ChestBackground/CollectedItem.play()
+				var entity = get_random_binded_man()
+				var preview = entity.get_node("Mirror/Sprite").duplicate()
+				preview.scale = Vector2.ONE * 5
+				ui.add_to_bar(entity)
+				$UILayer/UI/Chest/ChestBackground/Card/Preview.add_child(preview)
+				$UILayer/UI/Chest/ChestBackground/Card/Message.text = entity.attributes.as_rich_text()
+				await $UILayer/UI/Chest/ChestBackground/Card.pressed
+			
+			#if has_card:
+				#for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
+					#$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
+					#n.queue_free()
+				#$UILayer/UI/Chest/ChestBackground/CollectedItem.play()
+				#await $UILayer/UI/Chest/ChestBackground/Card.pressed
+			for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
+				$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
+				n.queue_free()
+			$UILayer/UI/Chest/ChestBackground/Card.hide()
+			$UILayer/UI/Prepare/Selector.show()
+			$UILayer/UI/Chest.hide()
+
+
+
 
 
 func _on_check_alive_timer_timeout() -> void:
@@ -65,11 +183,13 @@ func _on_check_alive_timer_timeout() -> void:
 					Game.Team.enemy:
 						enemy.append(e)
 		if len(player) == 0:
-			print("GAME OVER!")
+			Game.current_state = Game.GameState.game_over
+			$UILayer/UI/GAMEOVER.show()
+			$UILayer/UI/GAMEOVER/Label.text = "[center][color=red]Вы продержались {} этапов!".format([Game.stages_passed], "{}")
 		if len(enemy) == 0:
 			for p in player:
 				p.reset()
-				ui.add_to_bar(p)
+				ui.call_deferred("add_to_bar", p)
 			Game.difficulty *= 2
 			next_level()
 	else:
@@ -106,6 +226,7 @@ func get_closest_oppositive_team_member(pos : Vector2, team : Game.Team) -> Node
 	return null
 
 func _on_attack_button_pressed() -> void:
+	ui.close_inventory()
 	for entity in get_tree().get_nodes_in_group("entity"):
 		if !entity.in_inventory:
 			entity.unpause()
@@ -127,8 +248,37 @@ func get_random_binded_man() -> Entity:
 	var w = weapons.pick_random()
 	var weapon = w[0].instantiate().duplicate()
 	weapon.randomize_texture()
-	weapon.weapon_attributes = Stats.get_random_weapon_attributes_architype(w[1])
-	man.character_attributes = Stats.get_random_character_attributes()
+	weapon.attributes = Stats.get_random_weapon_attributes_architype(w[1])
+	man.attributes = Stats.get_random_character_attributes()
 	man.set_weapon_noupdate(weapon)
 	man.generate_container()
 	return man
+
+var armors = [
+	preload("res://armor/HeadArmor.tscn"),
+	preload("res://armor/ChestArmor.tscn"),
+	preload("res://armor/LegsArmor.tscn")
+]
+func get_random_armor() -> Armor:
+	var a = armors.pick_random().instantiate()
+	a.randomize_texture()
+	a.attributes = Stats.get_random_armor_attributes()
+	return a
+
+func get_random_accessory() -> Accessory:
+	var a = preload("res://accessories/Accessory.tscn").instantiate()
+	a.randomize_texture()
+	a.attributes = Stats.get_random_item_attributes()
+	return a
+
+func get_random_potion() -> Potion:
+	var p = Potion.new()
+	p.make_random()
+	return p
+
+func get_random_weapon() -> Weapon:
+	var w = weapons.pick_random()
+	var weapon = w[0].instantiate().duplicate()
+	weapon.randomize_texture()
+	weapon.attributes = Stats.get_random_weapon_attributes_architype(w[1])
+	return weapon

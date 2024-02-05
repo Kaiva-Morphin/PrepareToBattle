@@ -39,6 +39,7 @@ func _process(_delta: float) -> void:
 							var col = result.collider
 							if col.is_in_group("entity") and col.is_in_group("player"):
 								$Prepare/Selector/Hint.show()
+								$PickPlayer.play()
 								picked_node = col
 								picked_node.collision.disabled = true
 								picked_node.in_inventory = true
@@ -46,6 +47,7 @@ func _process(_delta: float) -> void:
 			if picked_node:
 				var rect = squad_selector.get_global_rect()
 				if rect.has_point(get_global_mouse_position()):
+					$BackToInventory.play()
 					picked_node.collision.disabled = true
 					picked_node.in_inventory = true
 					add_to_bar(picked_node)
@@ -56,9 +58,11 @@ func _process(_delta: float) -> void:
 							is_any_spawn_rect_has_mouse = true
 							break
 					if is_any_spawn_rect_has_mouse:
+						$PutPlayer.play()
 						picked_node.in_inventory = false
 						picked_node.collision.disabled = false
 					else:
+						$WrongPlace.play()
 						picked_node.collision.disabled = true
 						picked_node.in_inventory = true
 						add_to_bar(picked_node)
@@ -76,12 +80,14 @@ func _process(_delta: float) -> void:
 			if picked_node:
 				var rect = $InBattle/Selector.get_global_rect()
 				if rect.has_point(get_global_mouse_position()):
+					$BackToInventory.play()
 					potion_to_bar(picked_node)
 					picked_node = null
 				else:
 					picked_node.apply_effect()
 					picked_node.queue_free()
 					picked_node = null
+					$"../../PotionDrop".play(0.45)
 					pass # apply potion
 
 
@@ -92,7 +98,7 @@ func _input(event: InputEvent) -> void:
 				var rect = squad_selector.get_global_rect()
 				if !rect.has_point(get_global_mouse_position()):
 					Game.manager.camera.target_position += -event.relative / Game.manager.camera.zoom.x
-
+				
 
 
 func add_to_bar(e: Entity):
@@ -103,19 +109,29 @@ func add_to_bar(e: Entity):
 	squad_selector_frame_container.add_child(rect)
 	e.reset()
 	e.in_inventory = true
-	e.reparent(rect)
+	if e.get_parent():
+		e.reparent(rect)
+	else:
+		rect.add_child(e)
 	e.scale = Vector2.ONE * 2
 	e.position = rect.custom_minimum_size / 2
 
 
 func _bar_cell_gui_input(event: InputEvent, e : Entity) -> void: # for picking, not drop
 	if picked_node: return
-	if Game.current_state == Game.GameState.inbattle: return
+	if Game.current_state != Game.GameState.prepare: return
 	if is_inventory_open: # select
 		if event is InputEventMouseButton:
-			if event.pressed:
+			if event.pressed and event.button_index == 1:
+				$PickPlayer.play()
 				inventory_selected_character = e
 				update_inventory_character_preview()
+				call_deferred("update_slot_tooltip", head_slot)
+				call_deferred("update_slot_tooltip", chest_slot)
+				call_deferred("update_slot_tooltip", legs_slot)
+				call_deferred("update_slot_tooltip", accessory1_slot)
+				call_deferred("update_slot_tooltip", accessory2_slot)
+				call_deferred("update_slot_tooltip", weapon_slot)
 	else: # check for put
 		if event is InputEventScreenDrag:
 			if !picked_node:
@@ -125,6 +141,7 @@ func _bar_cell_gui_input(event: InputEvent, e : Entity) -> void: # for picking, 
 				if rect.has_point(get_global_mouse_position()):
 					pass
 				else: # put
+					$PickPlayer.play()
 					$Prepare/Selector/Hint.show()
 					picked_node = e
 					picked_node.scale = Vector2.ONE
@@ -146,15 +163,25 @@ func _on_inventory_button_pressed() -> void:
 		close_inventory()
 
 func open_inventory():
+	is_inventory_open = true
+	$OpenInventory.play()
 	$Prepare/InventoryButton.texture_normal.region.position = Vector2(32, 0)
 	$Prepare/InventoryButton.texture_pressed.region.position = Vector2(48, 0)
 	inventory_selected_character = null
+	update_slot_tooltip(head_slot)
+	update_slot_tooltip(chest_slot)
+	update_slot_tooltip(legs_slot)
+	update_slot_tooltip(accessory1_slot)
+	update_slot_tooltip(accessory2_slot)
+	update_slot_tooltip(weapon_slot)
 	update_inventory_character_preview()
 	$Prepare/Inventory.show()
 
+
 func close_inventory():
+	is_inventory_open = false
+	$CloseInventory.play()
 	if picked_item:
-		
 		picked_item.reparent(picked_item_slot)
 		picked_item.position = slot_offset
 		picked_item = null
@@ -194,15 +221,23 @@ func item_selected(event: InputEvent, slot: Slot):
 			else:
 				var item = slot.get_item_or_null()
 				if item:
+					$InventorySound.play()
 					picked_item_slot = slot
 					picked_item = item
 					picked_item.reparent(inventory_bg)
+					return true
 				#else:
 					#try_put(picked_item_slot, slot)
 	
 
 func try_swap_slots(_picked_item_slot : Slot, slot : Slot) -> bool:
-	if _picked_item_slot == slot:
+	if _picked_item_slot == slot: # drop
+		if picked_item_slot.wearable_slot:
+			$InventoryWear.play()
+		else:
+			$InventoryPut.play()
+		#else:
+		#	
 		picked_item.reparent(slot)
 		update_slot_tooltip(slot)
 		picked_item.position = slot_offset
@@ -210,10 +245,16 @@ func try_swap_slots(_picked_item_slot : Slot, slot : Slot) -> bool:
 		picked_item = null
 		return true
 	var item = slot.get_item_or_null()
-	if !inventory_selected_character and (_picked_item_slot.wearable_slot or slot.wearable_slot): return false
+	if !inventory_selected_character and (_picked_item_slot.wearable_slot or slot.wearable_slot):
+		$InventoryWrong.play()
+		return false
 	if slot.specific_type == picked_item.item_type or slot.specific_type == Game.ItemType.any:
 		if item: # swap
-			if _picked_item_slot.specific_type == item.item_type or _picked_item_slot.specific_type == Game.ItemType.any:
+			if _picked_item_slot.wearable_slot || slot.wearable_slot :
+				$InventoryWear.play()
+			else:
+				$InventorySound.play()
+			if (_picked_item_slot.specific_type == item.item_type or _picked_item_slot.specific_type == Game.ItemType.any): #_picked_item_slot != weapon_slot:#
 				picked_item.reparent(slot)
 				update_slot_tooltip(slot)
 				picked_item.position = slot_offset
@@ -221,7 +262,24 @@ func try_swap_slots(_picked_item_slot : Slot, slot : Slot) -> bool:
 				update_slot_tooltip(picked_item_slot)
 				picked_item = item
 				return true
-		else:
+			else:
+				# swap
+				
+				#if _picked_item_slot.specific_type == item.item_type:
+				var new_slot = $Prepare/Inventory/ScrollContainer/Slot_Template.duplicate()
+				new_slot.show()
+				$Prepare/Inventory/ScrollContainer/GridContainer.add_child(new_slot)
+				new_slot.connect("gui_input", func(event): item_selected(event, new_slot))
+				picked_item.reparent(slot)
+				update_slot_tooltip(slot)
+				picked_item.position = slot_offset
+				item.reparent(inventory_bg)
+				picked_item_slot = new_slot
+				update_slot_tooltip(picked_item_slot)
+				picked_item = item
+				return true
+		else: # wear
+			$InventoryWear.play()
 			picked_item.reparent(slot)
 			update_slot_tooltip(slot)
 			picked_item.position = slot_offset
@@ -230,6 +288,7 @@ func try_swap_slots(_picked_item_slot : Slot, slot : Slot) -> bool:
 				picked_item_slot.queue_free()
 			picked_item_slot = null
 			return true
+	$InventoryWrong.play()
 	return false
 
 
@@ -248,19 +307,15 @@ func add_item(item: Item):
 
 func update_slot_tooltip(slot):
 	if slot:
+		slot.tooltip_text = ""
+		slot.self_modulate = Color.WHITE
 		var c = slot.get_child_count()
 		if c > 0:
-			var item = slot.get_child(0)
-			if item is Weapon:
-				if item.weapon_attributes:
-					slot.tooltip_text = item.weapon_attributes.as_text()
-			if item is Armor:
-				if item.armor_attributes:
-					slot.tooltip_text = item.armor_attributes.as_text()
-			if item is Accessory:
-				if item.attributes:
+			for item in slot.get_children():
+				if item is Item:
+					slot.self_modulate = Stats.get_rarity_color(item.attributes.item_rarity)
 					slot.tooltip_text = item.attributes.as_text()
-
+			
 @onready var weapon_slot : Slot = $Prepare/Inventory/WeaponSlot
 @onready var head_slot : Slot = $Prepare/Inventory/HeadSlot
 @onready var chest_slot : Slot = $Prepare/Inventory/ChestSlot
@@ -269,38 +324,42 @@ func update_slot_tooltip(slot):
 @onready var accessory2_slot : Slot = $Prepare/Inventory/Acc2Slot
 
 func _on_head_slot_gui_input(event: InputEvent) -> void:
-	#if !picked_item: return
 	if item_selected(event, head_slot):
 		var item = head_slot.get_item_or_null() 
 		if item:
 			var new_item = item.duplicate()
-			new_item.armor_attributes = item.armor_attributes
+			new_item.attributes = item.attributes
 			new_item.scale = Vector2.ONE
 			new_item.position = Vector2.ZERO
 			inventory_selected_character.set_armor_head(new_item)
-			update_inventory_character_preview()
-
+		elif inventory_selected_character:
+			inventory_selected_character.set_armor_head(null)
+		update_inventory_character_preview()
 func _on_chest_slot_gui_input(event: InputEvent) -> void:
 	if item_selected(event, chest_slot):
 		var item = chest_slot.get_item_or_null() 
 		if item:
 			var new_item = item.duplicate()
-			new_item.armor_attributes = item.armor_attributes
+			new_item.attributes = item.attributes
 			new_item.scale = Vector2.ONE
 			new_item.position = Vector2.ZERO
 			inventory_selected_character.set_armor_chest(new_item)
-			update_inventory_character_preview()
+		elif inventory_selected_character:
+			inventory_selected_character.set_armor_chest(null)
+		update_inventory_character_preview()
 	
 func _on_legs_slot_gui_input(event: InputEvent) -> void:
 	if item_selected(event, legs_slot):
 		var item = legs_slot.get_item_or_null() 
 		if item:
 			var new_item = item.duplicate()
-			new_item.armor_attributes = item.armor_attributes
+			new_item.attributes = item.attributes
 			new_item.scale = Vector2.ONE
 			new_item.position = Vector2.ZERO
 			inventory_selected_character.set_armor_legs(new_item)
-			update_inventory_character_preview()
+		elif inventory_selected_character:
+			inventory_selected_character.set_armor_legs(null)
+		update_inventory_character_preview()
 
 func _on_acc_1_slot_gui_input(event: InputEvent) -> void:
 	if item_selected(event, accessory1_slot):
@@ -311,7 +370,9 @@ func _on_acc_1_slot_gui_input(event: InputEvent) -> void:
 			new_item.scale = Vector2.ONE
 			new_item.position = Vector2.ZERO
 			inventory_selected_character.set_accessory1(new_item)
-			update_inventory_character_preview()
+		elif inventory_selected_character:
+			inventory_selected_character.set_accessory1(null)
+		update_inventory_character_preview()
 
 func _on_acc_2_slot_gui_input(event: InputEvent) -> void:
 	if item_selected(event, accessory2_slot):
@@ -322,8 +383,11 @@ func _on_acc_2_slot_gui_input(event: InputEvent) -> void:
 			new_item.scale = Vector2.ONE
 			new_item.position = Vector2.ZERO
 			inventory_selected_character.set_accessory2(new_item)
-			update_inventory_character_preview()
-
+		elif inventory_selected_character:
+			inventory_selected_character.set_accessory2(null)
+		update_inventory_character_preview()
+		
+		
 func _on_weapon_slot_gui_input(event: InputEvent) -> void:
 	if !picked_item: return
 	if item_selected(event, weapon_slot):
@@ -334,7 +398,7 @@ func _on_weapon_slot_gui_input(event: InputEvent) -> void:
 				#weapon_node.remove_child(w)
 				#w.queue_free()
 			var new_weapon = item.duplicate()
-			new_weapon.weapon_attributes = item.weapon_attributes
+			new_weapon.attributes = item.attributes
 			new_weapon.scale = Vector2.ONE
 			new_weapon.position = Vector2.ZERO
 			inventory_selected_character.set_weapon(new_weapon)
@@ -348,25 +412,33 @@ func _on_weapon_slot_gui_input(event: InputEvent) -> void:
 func update_inventory_character_preview():
 	$Prepare/Inventory/Hint.hide()
 	for node in preview_node.get_children():
+		preview_node.remove_child(node)
 		node.queue_free()
 	for child in weapon_slot.get_children():
+		weapon_slot.remove_child(child)
 		child.queue_free()
 	for child in accessory1_slot.get_children():
+		accessory1_slot.remove_child(child)
 		child.queue_free()
 	for child in accessory2_slot.get_children():
+		accessory2_slot.remove_child(child)
 		child.queue_free()
 	for child in legs_slot.get_children():
+		legs_slot.remove_child(child)
 		child.queue_free()
 	for child in chest_slot.get_children():
+		chest_slot.remove_child(child)
 		child.queue_free()
 	for child in head_slot.get_children():
+		head_slot.remove_child(child)
 		child.queue_free()
+	
 	if inventory_selected_character:
 		var sprite = inventory_selected_character.get_node("Mirror").duplicate()
 		var weapon_node = inventory_selected_character.get_node("Mirror/Weapon")
 		if weapon_node.get_child_count() > 0:
 			var weapon = weapon_node.get_child(0).duplicate()
-			weapon.weapon_attributes = weapon_node.get_child(0).weapon_attributes
+			weapon.attributes = weapon_node.get_child(0).attributes
 			weapon_slot.add_child(weapon)
 			weapon.scale = Vector2.ONE * 2
 			weapon.position = slot_offset
@@ -374,7 +446,7 @@ func update_inventory_character_preview():
 		var item_node = inventory_selected_character.get_node("Mirror/Sprite/Head/HeadArmor")
 		if item_node.get_child_count() > 0:
 			var item = item_node.get_child(0).duplicate()
-			item.armor_attributes = item_node.get_child(0).armor_attributes
+			item.attributes = item_node.get_child(0).attributes
 			head_slot.add_child(item)
 			item.scale = Vector2.ONE * 2
 			item.position = slot_offset
@@ -398,7 +470,7 @@ func update_inventory_character_preview():
 		item_node = inventory_selected_character.get_node("Mirror/Sprite/Body")
 		if item_node.get_child_count() > 0:
 			var item = item_node.get_child(0).duplicate()
-			item.armor_attributes = item_node.get_child(0).armor_attributes
+			item.attributes = item_node.get_child(0).attributes
 			chest_slot.add_child(item)
 			item.scale = Vector2.ONE * 2
 			item.position = slot_offset
@@ -406,11 +478,10 @@ func update_inventory_character_preview():
 		item_node = inventory_selected_character.get_node("Mirror/Sprite/HiddenLegs")
 		if item_node.get_child_count() > 0:
 			var item = item_node.get_child(0).duplicate()
-			item.armor_attributes = item_node.get_child(0).armor_attributes
+			item.attributes = item_node.get_child(0).attributes
 			legs_slot.add_child(item)
 			item.scale = Vector2.ONE * 2
 			item.position = slot_offset
-		
 		preview_node.add_child(sprite)
 		sprite.scale = Vector2.ONE * 5
 	else:
@@ -454,7 +525,7 @@ func _ready():
 	#
 
 
-func add_potion(type : Potion.PotionType):
+func add_potion():
 	pass
 	#$InBattle/Selector/ScrollContainer/HBoxContainer.add_child()
 
@@ -462,7 +533,10 @@ func potion_to_bar(potion : Potion):
 	if potion:
 		potion.custom_minimum_size = Vector2.ONE * 64
 		potion.size = Vector2.ONE * 64
-		potion.reparent($InBattle/Selector/ScrollContainer/HBoxContainer)
+		if potion.get_parent():
+			potion.reparent($InBattle/Selector/ScrollContainer/HBoxContainer)
+		else:
+			$InBattle/Selector/ScrollContainer/HBoxContainer.add_child(potion)
 		potion.connect("gui_input", func(event): potion_gui_input(event,  potion))
 
 
@@ -477,6 +551,7 @@ func potion_gui_input(event, potion : Potion ):
 			if rect.has_point(get_global_mouse_position()): # put
 				pass
 			else: # pick
+				$PickPlayer.play()
 				#$Prepare/Selector/Hint.show()
 				var new_potion = potion.duplicate()
 				potion.queue_free() # for clearing signal
@@ -485,6 +560,44 @@ func potion_gui_input(event, potion : Potion ):
 				new_potion.size = Vector2.ONE * 16
 				Game.manager.add_child(new_potion)
 
+
+
+
+func _on_settings_button_pressed() -> void:
+	var tween = create_tween()
+	if $Settings.visible:
+		tween.tween_property($SettingsButton, "rotation", PI * 2, 0.3)
+		$Settings.hide()
+	else:
+		tween.tween_property($SettingsButton, "rotation", 0, 0.3)
+		$Settings.show()
+
+var master_bus_idx = AudioServer.get_bus_index("Master")
+var inventory_bus_idx = AudioServer.get_bus_index("Inventory")
+var bg_music_bus_idx = AudioServer.get_bus_index("Background")
+var bt_music_bus_idx = AudioServer.get_bus_index("Battle")
+var entity_bus_idx = AudioServer.get_bus_index("Entity")
+
+func _on_master_value_changed(value: float) -> void:
+	AudioServer.set_bus_volume_db(master_bus_idx, linear_to_db(value))
+	AudioServer.set_bus_mute(master_bus_idx, value < 0.05)
+
+
+func _on_inventory_value_changed(value: float) -> void:
+	AudioServer.set_bus_volume_db(inventory_bus_idx, linear_to_db(value))
+	AudioServer.set_bus_mute(inventory_bus_idx, value < 0.05)
+
+
+func _on_music_value_changed(value: float) -> void:
+	AudioServer.set_bus_volume_db(bg_music_bus_idx, linear_to_db(value))
+	AudioServer.set_bus_mute(bg_music_bus_idx, value < 0.05)
+	AudioServer.set_bus_volume_db(bt_music_bus_idx, linear_to_db(value))
+	AudioServer.set_bus_mute(bt_music_bus_idx, value < 0.05)
+
+
+func _on_entity_value_changed(value: float) -> void:
+	AudioServer.set_bus_volume_db(entity_bus_idx, linear_to_db(value))
+	AudioServer.set_bus_mute(entity_bus_idx, value < 0.05)
 
 
 

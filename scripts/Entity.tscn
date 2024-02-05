@@ -5,7 +5,7 @@
 [ext_resource type="FontFile" uid="uid://cwp7h6bubwify" path="res://src/assets/fonts/visitor-brk/visitor1.ttf" id="3_jjtf8"]
 [ext_resource type="Texture2D" uid="uid://ldanhp1iacqk" path="res://src/sprites/healthlabel.png" id="4_srrrc"]
 [ext_resource type="Texture2D" uid="uid://gsv8yho6nxie" path="res://src/sprites/healthlabel_progress.png" id="5_surlc"]
-[ext_resource type="AudioStream" uid="uid://dyn0jku8dkoqw" path="res://src/assets/sound/walk.mp3" id="6_eqdc8"]
+[ext_resource type="AudioStream" uid="uid://dyn0jku8dkoqw" path="res://sounds/walk.mp3" id="6_eqdc8"]
 [ext_resource type="Script" path="res://scripts/HINT.gd" id="7_juws1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6vtff"]

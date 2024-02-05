@@ -1,8 +1,6 @@
 class_name Armor
 extends Item
 
-var armor_attributes : Stats.ArmorAttributes
-
 @export var sprite_list : Array[Sprite2D] = []
 @export var texture_variant_amount : int = 0
 @export var texture_size : int = 16

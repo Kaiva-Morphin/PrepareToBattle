@@ -1,10 +1,11 @@
-[gd_scene load_steps=32 format=3 uid="uid://dwpgujldka7k0"]
+[gd_scene load_steps=63 format=3 uid="uid://dwpgujldka7k0"]
 
 [ext_resource type="Script" path="res://scripts/Manager.gd" id="1_d4gce"]
 [ext_resource type="Script" path="res://scripts/Camera.gd" id="2_etiqh"]
 [ext_resource type="Script" path="res://scripts/UI.gd" id="2_w7xp8"]
 [ext_resource type="Texture2D" uid="uid://dqoi61aqr2dmp" path="res://src/sprites/UI/InventoryButton.png" id="3_p4dkt"]
 [ext_resource type="Texture2D" uid="uid://t6eqsvx88avo" path="res://src/sprites/UI/Map.png" id="4_atgx1"]
+[ext_resource type="Texture2D" uid="uid://boxso16jvfj2o" path="res://src/sprites/UI/Settings.png" id="4_yo05a"]
 [ext_resource type="Texture2D" uid="uid://c3k0xgnildyby" path="res://src/sprites/UI/Attack.png" id="6_8ggn5"]
 [ext_resource type="Texture2D" uid="uid://clgga7xa8i5xp" path="res://src/sprites/UI/InventoryBg.png" id="7_weg77"]
 [ext_resource type="Script" path="res://scripts/Slot.gd" id="8_0m7ma"]
@@ -18,12 +19,33 @@
 [ext_resource type="Texture2D" uid="uid://d1ug3aae5uwre" path="res://src/sprites/Potions/LightningPotion.png" id="15_1h6q8"]
 [ext_resource type="Texture2D" uid="uid://c4gfav6mtmrw7" path="res://src/sprites/Potions/HealPotion.png" id="16_tk6bg"]
 [ext_resource type="Texture2D" uid="uid://ws4iomi5xgml" path="res://src/sprites/Potions/ChaosPotion.png" id="17_abi6q"]
+[ext_resource type="Texture2D" uid="uid://criwockl8brs7" path="res://src/sprites/UI/spinner.png" id="19_symcy"]
+[ext_resource type="Texture2D" uid="uid://cn1gmke5ukt1i" path="res://src/sprites/UI/chest.png" id="20_o5noo"]
+[ext_resource type="AudioStream" uid="uid://cr53vx5y3171c" path="res://sounds/chest_preopen.mp3" id="21_vxta5"]
+[ext_resource type="AudioStream" uid="uid://y2ysoxs6xdb8" path="res://sounds/chest_reveal.mp3" id="22_ufild"]
+[ext_resource type="AudioStream" uid="uid://dvpuy5h43723i" path="res://sounds/colected_item.mp3" id="23_4ss8e"]
+[ext_resource type="AudioStream" uid="uid://c0mm3x0itwhnm" path="res://sounds/cant_pick2.ogg" id="23_i8s3c"]
+[ext_resource type="AudioStream" uid="uid://5esmp5h8wb0u" path="res://sounds/item_picked.mp3" id="24_cqqth"]
+[ext_resource type="AudioStream" uid="uid://pjkjjc4qjy3e" path="res://sounds/mouseclick1.ogg" id="24_drj7q"]
+[ext_resource type="AudioStream" uid="uid://bekbwgpjnq21a" path="res://sounds/pick_character.ogg" id="24_hc3tx"]
+[ext_resource type="AudioStream" uid="uid://dmppato7iuaon" path="res://sounds/bookClose.ogg" id="25_chlac"]
+[ext_resource type="AudioStream" uid="uid://cc0oxyli8dyin" path="res://sounds/put_player.ogg" id="25_ji78n"]
+[ext_resource type="AudioStream" uid="uid://bhtf6yy8v4wc3" path="res://sounds/mouserelease1.ogg" id="25_kciso"]
+[ext_resource type="AudioStream" uid="uid://dp5qyb3pb1jhu" path="res://sounds/item_weared.mp3" id="25_kkmlu"]
+[ext_resource type="AudioStream" uid="uid://c1j7fvv0fv26h" path="res://sounds/inventory_sound2.ogg" id="25_wvp3p"]
+[ext_resource type="AudioStream" uid="uid://bvvle6ytvatsv" path="res://sounds/back_to_inventory.ogg" id="26_l4ffj"]
+[ext_resource type="AudioStream" uid="uid://nhetrsx6ela" path="res://sounds/step.mp3" id="27_x5dy7"]
+[ext_resource type="AudioStream" uid="uid://cgdeennsu6qfp" path="res://sounds/open_inventory.mp3" id="28_8f4pd"]
+[ext_resource type="AudioStream" uid="uid://t3c6xwcexpok" path="res://sounds/cant_pick.ogg" id="28_qwvux"]
+[ext_resource type="AudioStream" uid="uid://bpr2ucvhnmfc2" path="res://sounds/zap.mp3" id="36_uy4y4"]
+[ext_resource type="AudioStream" uid="uid://c1wvktnaix10q" path="res://sounds/potion_drop.mp3" id="37_q35mg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7bv4f"]
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
+bg_color = Color(0.117647, 0.117647, 0.117647, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 border_color = Color(0.384314, 0.384314, 0.384314, 1)
 shadow_size = 5
 
@@ -33,6 +55,11 @@ cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
 cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
+cache/0/16/0/glyphs/0/advance = Vector2(0, 0)
+cache/0/16/0/glyphs/0/offset = Vector2(0, 0)
+cache/0/16/0/glyphs/0/size = Vector2(0, 0)
+cache/0/16/0/glyphs/0/uv_rect = Rect2(0, 0, 0, 0)
+cache/0/16/0/glyphs/0/texture_idx = -1
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
 [sub_resource type="Theme" id="Theme_dbe3b"]
@@ -73,6 +100,231 @@ region = Rect2(6, 0, 6, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_k688k"]
 atlas = ExtResource("10_i8xh3")
 region = Rect2(18, 0, 6, 16)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h8gi5"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5htax"]
+atlas = ExtResource("20_o5noo")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="Animation" id="Animation_yg0fh"]
+resource_name = "spinner"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Spinner:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 10),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
+[sub_resource type="Animation" id="Animation_wvoal"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpinnerAnim:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3fa7o"]
+_data = {
+"RESET": SubResource("Animation_wvoal"),
+"spinner": SubResource("Animation_yg0fh")
+}
+
+[sub_resource type="Animation" id="Animation_w5g5f"]
+resource_name = "open"
+length = 5.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Chest:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.5, 0.6, 1.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Rect2(0, 0, 24, 24), Rect2(24, 0, 24, 24), Rect2(48, 0, 24, 24)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer2:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(1.4),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Chest:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 1.3, 1.5, 1.6, 2.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.6, 1.6, 2, 1),
+"update": 0,
+"values": [Vector2(380, 280), Vector2(370, 280), Vector2(390, 280), Vector2(370, 280), Vector2(390, 280), Vector2(370, 280), Vector2(390, 280), Vector2(370, 280), Vector2(390, 280), Vector2(370, 280), Vector2(380, 280), Vector2(380, 280), Vector2(380, 240), Vector2(380, 240), Vector2(380, 900)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Chest:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Chest:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 1.4),
+"transitions": PackedFloat32Array(1, 1, 1.36604, 1),
+"update": 0,
+"values": [Vector2(5, 5), Vector2(4, 4), Vector2(4, 4), Vector2(5, 5)]
+}
+tracks/6/type = "method"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("../../../..")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"values": []
+}
+
+[sub_resource type="Animation" id="Animation_t4mpp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Chest:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(0, 0, 24, 24)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer2:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Chest:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(380, 280)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Chest:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Chest:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(5, 5)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_w30kl"]
+_data = {
+"RESET": SubResource("Animation_t4mpp"),
+"open": SubResource("Animation_w5g5f")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bshdj"]
+bg_color = Color(0.0901961, 0.0901961, 0.0901961, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ax0yc"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="Manager" type="Node2D"]
 script = ExtResource("1_d4gce")
@@ -710,6 +962,7 @@ script = ExtResource("13_egjtn")
 type = 5
 
 [node name="RagePotion" type="TextureRect" parent="UILayer/UI/InBattle/Selector/ScrollContainer/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("13_iogev")
@@ -774,7 +1027,347 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="Chest" type="Control" parent="UILayer/UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChestBackground" type="Panel" parent="UILayer/UI/Chest"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_h8gi5")
+
+[node name="Spinner" type="TextureRect" parent="UILayer/UI/Chest/ChestBackground"]
+modulate = Color(0.407843, 0.407843, 0.407843, 1)
+custom_minimum_size = Vector2(512, 512)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(255, 255)
+texture = ExtResource("19_symcy")
+
+[node name="Chest" type="TextureRect" parent="UILayer/UI/Chest/ChestBackground"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 19.9996
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(5, 5)
+pivot_offset = Vector2(20, 20)
+texture = SubResource("AtlasTexture_5htax")
+
+[node name="SpinnerAnim" type="AnimationPlayer" parent="UILayer/UI/Chest/ChestBackground"]
+libraries = {
+"": SubResource("AnimationLibrary_3fa7o")
+}
+speed_scale = 2.0
+
+[node name="ChestAnim" type="AnimationPlayer" parent="UILayer/UI/Chest/ChestBackground"]
+libraries = {
+"": SubResource("AnimationLibrary_w30kl")
+}
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="UILayer/UI/Chest/ChestBackground"]
+stream = ExtResource("21_vxta5")
+volume_db = -30.0
+bus = &"Inventory"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="UILayer/UI/Chest/ChestBackground"]
+stream = ExtResource("22_ufild")
+volume_db = -15.0
+bus = &"Inventory"
+
+[node name="CollectedItem" type="AudioStreamPlayer" parent="UILayer/UI/Chest/ChestBackground"]
+stream = ExtResource("23_4ss8e")
+pitch_scale = 2.0
+bus = &"Inventory"
+
+[node name="Card" type="Button" parent="UILayer/UI/Chest/ChestBackground"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.1
+anchor_right = 0.75
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_bshdj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bshdj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bshdj")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_bshdj")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bshdj")
+
+[node name="Message" type="RichTextLabel" parent="UILayer/UI/Chest/ChestBackground/Card"]
+clip_contents = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.4
+anchor_right = 0.9
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+bbcode_enabled = true
+text = "
+
+
+
+
+[center]НАЖМИТЕ ЧТОБЫ ПРОДОЛЖИТЬ"
+
+[node name="Hint" type="RichTextLabel" parent="UILayer/UI/Chest/ChestBackground/Card"]
+clip_contents = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1475
+anchor_top = 0.964583
+anchor_right = 0.86
+anchor_bottom = 1.04792
+offset_left = -1.00001
+offset_top = -30.0
+offset_right = -1.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+bbcode_enabled = true
+text = "[tornado] НАЖМИТЕ ЧТОБЫ ПРОДОЛЖИТЬ"
+scroll_active = false
+
+[node name="Preview" type="Control" parent="UILayer/UI/Chest/ChestBackground/Card"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -6.0
+offset_top = -168.0
+offset_right = -6.0
+offset_bottom = -168.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CantPick" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("23_i8s3c")
+bus = &"Inventory"
+
+[node name="InventoryPick" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("24_cqqth")
+bus = &"Inventory"
+
+[node name="InventorySound" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("25_wvp3p")
+volume_db = -15.0
+bus = &"Inventory"
+
+[node name="InventoryWear" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("25_kkmlu")
+bus = &"Inventory"
+
+[node name="InventoryPut" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("27_x5dy7")
+volume_db = -14.0
+pitch_scale = 2.0
+bus = &"Inventory"
+
+[node name="InventoryWrong" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("28_qwvux")
+volume_db = -14.0
+pitch_scale = 2.0
+bus = &"Inventory"
+
+[node name="MouseClick" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("24_drj7q")
+bus = &"Inventory"
+
+[node name="MouseRelease" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("25_kciso")
+bus = &"Inventory"
+
+[node name="PickPlayer" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("24_hc3tx")
+bus = &"Inventory"
+
+[node name="CloseInventory" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("25_chlac")
+volume_db = -20.0
+pitch_scale = 1.2
+bus = &"Inventory"
+
+[node name="OpenInventory" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("28_8f4pd")
+volume_db = -10.0
+pitch_scale = 1.5
+bus = &"Inventory"
+
+[node name="PutPlayer" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("25_ji78n")
+bus = &"Inventory"
+
+[node name="BackToInventory" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("26_l4ffj")
+bus = &"Inventory"
+
+[node name="WrongPlace" type="AudioStreamPlayer" parent="UILayer/UI"]
+stream = ExtResource("23_i8s3c")
+bus = &"Inventory"
+
+[node name="Settings" type="Control" parent="UILayer/UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="UILayer/UI/Settings"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MasterLabel2" type="Label" parent="UILayer/UI/Settings/Panel"]
+layout_mode = 2
+offset_left = 374.0
+offset_top = 203.0
+offset_right = 429.0
+offset_bottom = 226.0
+text = "ЗВУКИ"
+
+[node name="CenterContainer" type="CenterContainer" parent="UILayer/UI/Settings/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="UILayer/UI/Settings/Panel/CenterContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="MasterLabel" type="Label" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+layout_mode = 2
+text = "Мастер
+"
+
+[node name="Master" type="HSlider" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="InvLabel" type="Label" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+layout_mode = 2
+text = "Инвентарь"
+
+[node name="Inventory" type="HSlider" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="BgLabel" type="Label" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+layout_mode = 2
+text = "Музыка"
+
+[node name="Music" type="HSlider" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="EntityLabel" type="Label" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+layout_mode = 2
+text = "Существа"
+
+[node name="Entity" type="HSlider" parent="UILayer/UI/Settings/Panel/CenterContainer/GridContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="SettingsButton" type="TextureButton" parent="UILayer/UI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset = Vector2(19, 21)
+texture_normal = ExtResource("4_yo05a")
+stretch_mode = 0
+
+[node name="GAMEOVER" type="Panel" parent="UILayer/UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ax0yc")
+
+[node name="Label" type="RichTextLabel" parent="UILayer/UI/GAMEOVER"]
+clip_contents = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_right = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+
 [node name="CheckAlive" type="Timer" parent="."]
+
+[node name="Zap" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("36_uy4y4")
+volume_db = -30.0
+pitch_scale = 5.0
+bus = &"Entity"
+
+[node name="PotionDrop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("37_q35mg")
+pitch_scale = 2.0
+bus = &"Entity"
 
 [connection signal="pressed" from="UILayer/UI/Prepare/InventoryButton" to="UILayer/UI" method="_on_inventory_button_pressed"]
 [connection signal="pressed" from="UILayer/UI/Prepare/AttackButton" to="." method="_on_attack_button_pressed"]
@@ -785,4 +1378,9 @@ offset_bottom = 40.0
 [connection signal="gui_input" from="UILayer/UI/Prepare/Inventory/Acc1Slot" to="UILayer/UI" method="_on_acc_1_slot_gui_input"]
 [connection signal="gui_input" from="UILayer/UI/Prepare/Inventory/Acc2Slot" to="UILayer/UI" method="_on_acc_2_slot_gui_input"]
 [connection signal="gui_input" from="UILayer/UI/Prepare/Inventory/WeaponSlot" to="UILayer/UI" method="_on_weapon_slot_gui_input"]
+[connection signal="value_changed" from="UILayer/UI/Settings/Panel/CenterContainer/GridContainer/Master" to="UILayer/UI" method="_on_master_value_changed"]
+[connection signal="value_changed" from="UILayer/UI/Settings/Panel/CenterContainer/GridContainer/Inventory" to="UILayer/UI" method="_on_inventory_value_changed"]
+[connection signal="value_changed" from="UILayer/UI/Settings/Panel/CenterContainer/GridContainer/Music" to="UILayer/UI" method="_on_music_value_changed"]
+[connection signal="value_changed" from="UILayer/UI/Settings/Panel/CenterContainer/GridContainer/Entity" to="UILayer/UI" method="_on_entity_value_changed"]
+[connection signal="pressed" from="UILayer/UI/SettingsButton" to="UILayer/UI" method="_on_settings_button_pressed"]
 [connection signal="timeout" from="CheckAlive" to="." method="_on_check_alive_timer_timeout"]

@@ -73,7 +73,7 @@ func _on_effect_timer_timeout() -> void:
 				lightning_sprite.modulate = Color(1., 1., 1., 0.5)
 				Game.manager.add_child(lightning_sprite)
 				lightning_sprite.global_position = e.global_position
-				
+				Game.manager.get_node("Zap").play()
 				var lightning_tween = lightning_sprite.create_tween()
 				lightning_tween.tween_property(lightning_sprite, "modulate", Color(1., 1., 1., 0.0), 0.2)
 				lightning_tween.connect("finished", func(): lightning_sprite.queue_free())

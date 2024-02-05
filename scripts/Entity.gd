@@ -18,7 +18,7 @@ var accsessorry2 : Accessory = null
 var tornado : Vector2 = Vector2.ZERO
 
 
-var character_attributes
+var attributes
 var attribute_container
 
 var current_hp
@@ -44,21 +44,21 @@ func update_container():
 	
 	update_health()
 	weapon.apply_container_stats(self)
-	$EntityLabel/Level/Label.text = Stats.get_rarity_char(character_attributes.item_rarity)
-	$EntityLabel/Level.self_modulate = Stats.get_rarity_color(character_attributes.item_rarity)
+	$EntityLabel/Level/Label.text = Stats.get_rarity_char(attributes.item_rarity)
+	$EntityLabel/Level.self_modulate = Stats.get_rarity_color(attributes.item_rarity)
 	$CanvasLayer/HINT.tooltip_text = attribute_container.get_final_stats()
 
 func generate_container():
 	attribute_container = Stats.AttributeContainer.new()
-	attribute_container.current_character = character_attributes
-	attribute_container.current_weapon = weapon.weapon_attributes
+	attribute_container.current_character = attributes
+	attribute_container.current_weapon = weapon.attributes
 	update_container()
 
 
 
 func set_weapon(e : Weapon):
 	set_weapon_noupdate(e)
-	attribute_container.override_weapon_attributes(e.weapon_attributes)
+	attribute_container.override_weapon_attributes(e.attributes)
 	weapon.apply_container_stats(self)
 
 func set_weapon_noupdate(e : Weapon):
@@ -84,7 +84,7 @@ func _ready():
 			color = Color.WHITE
 		null:
 			color = Color.BLACK
-	$EntityLabel.modulate = color
+	$EntityLabel/Level/Health.modulate = color
 	animation_player = get_node_or_null("Animation")
 	if animation_player:
 		animation_player.speed_scale = 0.8 + randf() * 0.4

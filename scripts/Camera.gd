@@ -31,9 +31,7 @@ func update_bounds():
 		room_bonds_right_bottom = room_bonds_right_bottom_node.global_position
 		var rect = (room_bonds_right_bottom - room_bonds_left_up)
 		var screen_size = get_viewport_rect().size
-		var min_val = min(screen_size.x / rect.x, screen_size.y/ rect.y) * 2
-		#1.04
-		print(min_val)
+		var min_val = max(screen_size.x / rect.x , screen_size.y / rect.y) 
 		min_zoom = min_val
 		
 

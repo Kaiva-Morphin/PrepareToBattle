@@ -6,7 +6,6 @@ var current_target : Entity = null
 @onready var animation_player = get_node_or_null("AnimationPlayer")
 
 var holder : Entity
-var weapon_attributes : Stats.WeaponAttributes
 var damage
 var crit_damage
 var crit_chance

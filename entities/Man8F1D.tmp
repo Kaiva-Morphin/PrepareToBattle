@@ -1,0 +1,324 @@
+[gd_scene load_steps=17 format=3 uid="uid://cvrcwr7kl6258"]
+
+[ext_resource type="PackedScene" uid="uid://dl8rc8ryu850g" path="res://scripts/Entity.tscn" id="1_rqvxw"]
+[ext_resource type="Script" path="res://entities/Man.gd" id="2_e28tc"]
+[ext_resource type="Texture2D" uid="uid://d3ydwg3nw7s52" path="res://src/sprites/Entities/Human.png" id="3_attvq"]
+[ext_resource type="PackedScene" uid="uid://btbm6672g53gd" path="res://weapons/Fists.tscn" id="4_51yj1"]
+[ext_resource type="Texture2D" uid="uid://bx0j3hthq4it8" path="res://weapons/FistsMap.png" id="5_k21ss"]
+
+[sub_resource type="Animation" id="Animation_jqclf"]
+resource_name = "Idle"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Mirror/Weapon:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 3), Vector2(0, 4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Mirror/Sprite/Body:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Mirror/Sprite/Head:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Mirror/Sprite/Body:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 1), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Mirror/Sprite:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_stthc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Mirror/Weapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 3)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Mirror/Sprite/Body:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Mirror/Sprite/Head:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Mirror/Sprite/Body:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Mirror/Sprite/Rleg:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Mirror/Sprite/Lleg:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Mirror/Sprite:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_imj7k"]
+resource_name = "Walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Mirror/Weapon:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 3), Vector2(0, 4), Vector2(0, 3), Vector2(0, 4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Mirror/Sprite:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.174533, 0.0, -0.174533, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Mirror/Sprite/Body:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0.5), Vector2(0, -0.5), Vector2(0, 0.5), Vector2(0, -0.5)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Mirror/Sprite/Lleg:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -1), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Mirror/Sprite/Rleg:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, -1), Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Mirror/Sprite/Head:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.1, 0.3, 0.5, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 1), Vector2(0, 0), Vector2(0, 1), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_f1fi1"]
+_data = {
+"Idle": SubResource("Animation_jqclf"),
+"RESET": SubResource("Animation_stthc"),
+"Walk": SubResource("Animation_imj7k")
+}
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_w8r6m"]
+load_path = "res://.godot/imported/Human.png-168f456a3ec0d5e0f7dc36725d522b9a.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a40f2"]
+atlas = SubResource("CompressedTexture2D_w8r6m")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kd4dj"]
+atlas = ExtResource("3_attvq")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m2kej"]
+atlas = ExtResource("3_attvq")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t6f66"]
+atlas = ExtResource("3_attvq")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_knl71"]
+resource_local_to_scene = true
+atlas = ExtResource("5_k21ss")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_15w7i"]
+resource_local_to_scene = true
+atlas = ExtResource("5_k21ss")
+
+[node name="Man" groups=["man"] instance=ExtResource("1_rqvxw")]
+script = ExtResource("2_e28tc")
+paused = null
+team = null
+
+[node name="Animation" type="AnimationPlayer" parent="." index="0"]
+libraries = {
+"": SubResource("AnimationLibrary_f1fi1")
+}
+
+[node name="Sprite" type="Node2D" parent="Mirror" index="0"]
+
+[node name="HiddenLegs" type="Node2D" parent="Mirror/Sprite" index="0"]
+visible = false
+
+[node name="Rleg" type="Sprite2D" parent="Mirror/Sprite" index="1"]
+texture = SubResource("AtlasTexture_a40f2")
+
+[node name="Lleg" type="Sprite2D" parent="Mirror/Sprite" index="2"]
+texture = SubResource("AtlasTexture_kd4dj")
+
+[node name="Body" type="Sprite2D" parent="Mirror/Sprite" index="3"]
+texture = SubResource("AtlasTexture_m2kej")
+
+[node name="Head" type="Sprite2D" parent="Mirror/Sprite" index="4"]
+texture = SubResource("AtlasTexture_t6f66")
+
+[node name="HeadArmor" type="Node2D" parent="Mirror/Sprite/Head" index="0"]
+position = Vector2(0, -3)
+
+[node name="Accessory1" type="Node2D" parent="Mirror/Sprite/Head" index="1"]
+position = Vector2(0, -3)
+
+[node name="Accessory2" type="Node2D" parent="Mirror/Sprite/Head" index="2"]
+position = Vector2(0, -3)
+
+[node name="Weapon" parent="Mirror" index="1"]
+position = Vector2(0, 3)
+
+[node name="Fists" parent="Mirror/Weapon" index="0" instance=ExtResource("4_51yj1")]
+visible = false
+
+[node name="Sprite2D2" parent="Mirror/Weapon/Fists" index="0"]
+texture = SubResource("AtlasTexture_knl71")
+
+[node name="Sprite2D" parent="Mirror/Weapon/Fists" index="1"]
+texture = SubResource("AtlasTexture_15w7i")
+
+[node name="Label" parent="EntityLabel/Level" index="0"]
+offset_left = -3.5
+offset_right = 3.5
+
+[editable path="Mirror/Weapon/Fists"]

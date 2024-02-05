@@ -6,8 +6,6 @@ extends Item
 @export var texture_size : int = 16
 @export var texture_column : int = 0
 
-var attributes : Stats.ItemAttributes
-
 func randomize_texture():
 	var i = randi_range(0, texture_variant_amount - 1)
 	for sprite in sprite_list:

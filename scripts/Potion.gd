@@ -21,6 +21,7 @@ var area_color = {
 
 
 
+
 @export var type : PotionType
 var duration : float = 3
 var effect_treshold : float = 0.5
@@ -29,7 +30,40 @@ var radius = 40
 func _ready() -> void:
 	self.add_to_group("potion")
 
-
+func make_random():
+	var v = randf()
+	if v < 0.2:
+		type = PotionType.HealPotion
+	elif v < 0.4:
+		type = PotionType.LightingPotion
+	elif v < 0.6:
+		type = PotionType.PoisonPotion
+	#elif v < 0.8:
+	#	type = PotionType.SummonPotion
+	elif v < 1.:
+		type = PotionType.TornadoPotion
+	match type:
+		PotionType.HealPotion:
+			texture = load("res://src/sprites/Potions/HealPotion.png")
+			tooltip_text = " ЗЕЛЬЕ ЛЕЧЕНИЯ "
+		PotionType.LightingPotion:
+			texture = load("res://src/sprites/Potions/LightningPotion.png")
+			tooltip_text =  " ЗЕЛЬЕ МОЛНИИ "
+		PotionType.PoisonPotion:
+			texture = load("res://src/sprites/Potions/PoisonPotion.png")
+			tooltip_text =  " ЗЕЛЬЕ ОТРАВЛЕНИЯ "
+		PotionType.RagePotion:
+			texture = load("res://src/sprites/Potions/RagePotion.png")
+			tooltip_text =  " ЗЕЛЬЕ ЯРОСТИ "
+		PotionType.SummonPotion:
+			texture = load("res://src/sprites/Potions/SummonSkeletonsPotion.png")
+			tooltip_text =  " ЗЕЛБЕ ПРИЗЫВА "
+		PotionType.TornadoPotion:
+			texture = load("res://src/sprites/Potions/TornadoPotion.png")
+			tooltip_text =  " ЗЕЛБЕ ТОРНАДО "
+	#RagePotion,
+func as_rich_text():
+	return tooltip_text
 #static func tweening(area):
 	#var tween = create_tween()
 	#print(tween)
