@@ -1,22 +1,18 @@
 extends Node
 
-'''
-Вместилище глобальных переменных
-'''
-
 # id -> data ({})
 # data <- {"wirangs"}
 var background_music_val = 0.
 var battle_music_val = -50.
 func _process(delta: float) -> void:
 	match current_state:
-		Game.GameState.prepare:
+		GameState.prepare:
 			background_music_val = lerp(background_music_val, 0., delta)
 			battle_music_val = lerp(battle_music_val, -50., delta)
-		Game.GameState.inbattle:
+		GameState.inbattle:
 			background_music_val = lerp(background_music_val, -50., delta)
 			battle_music_val = lerp(battle_music_val, 0., delta)
-		Game.GameState.game_over:
+		GameState.game_over:
 			background_music_val = lerp(background_music_val, -50., delta)
 			battle_music_val = lerp(battle_music_val, -50., delta)
 	battle_music_player.volume_db = battle_music_val
