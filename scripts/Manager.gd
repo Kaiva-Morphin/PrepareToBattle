@@ -10,6 +10,7 @@ var mappool = [
 
 func next_level():
 	Game.current_state = Game.GameState.prepare
+	for node in get_tree().get_nodes_in_group("projectile"): node.despawn()
 	var prev_map = get_node_or_null("map")
 	if prev_map:
 		remove_child(prev_map)
@@ -63,20 +64,22 @@ func get_closest_oppositive_team_member(pos : Vector2, team : Game.Team) -> Node
 			var closest : Node2D = null
 			var closest_val : float
 			for node in tree.get_nodes_in_group("player"):
-				var dist : float = pos.distance_squared_to(node.global_position) ** 2
-				if closest == null or dist < closest_val:
-					closest = node
-					closest_val = dist
+				if !node.in_inventory:
+					var dist : float = pos.distance_squared_to(node.global_position) ** 2
+					if closest == null or dist < closest_val:
+						closest = node
+						closest_val = dist
 			if closest:
 				return closest
 		Game.Team.player:
 			var closest : Node2D = null
 			var closest_val : float
 			for node in tree.get_nodes_in_group("enemy"):
-				var dist : float = pos.distance_squared_to(node.global_position) ** 2
-				if closest == null or dist < closest_val:
-					closest = node
-					closest_val = dist
+				if !node.in_inventory:
+					var dist : float = pos.distance_squared_to(node.global_position) ** 2
+					if closest == null or dist < closest_val:
+						closest = node
+						closest_val = dist
 			if closest:
 				return closest
 		Game.Team.other:
@@ -91,11 +94,21 @@ func _on_attack_button_pressed() -> void:
 			ui.in_battle()
 			$CheckAlive.start()
 
+var weapons = [
+	[preload("res://weapons/Axes.tscn"), Stats.WeaponArchiType.Axe],
+	[preload("res://weapons/Fists.tscn"), Stats.WeaponArchiType.Fists],
+	[preload("res://weapons/Knifes.tscn"), Stats.WeaponArchiType.Knife],
+	[preload("res://weapons/Rapiers.tscn"), Stats.WeaponArchiType.Rapier],
+	[preload("res://weapons/Swords.tscn"), Stats.WeaponArchiType.Sword],
+	[preload("res://weapons/WarStaffs.tscn"), Stats.WeaponArchiType.WarStaff],
+]
 
 func get_random_binded_man() -> Entity:
-	var man = Game.character.instantiate()
-	var weapon = Game.fists.instantiate()
-	weapon.weapon_attributes = Stats.get_random_weapon_attributes_architype(Stats.WeaponArchiType.Fists)
+	var man = preload("res://entities/Man.tscn").instantiate()
+	var w = weapons.pick_random()
+	var weapon = w[0].instantiate().duplicate()
+	weapon.randomize_texture()
+	weapon.weapon_attributes = Stats.get_random_weapon_attributes_architype(w[1])
 	man.character_attributes = Stats.get_random_character_attributes()
 	man.set_weapon_noupdate(weapon)
 	man.generate_container()

@@ -49,7 +49,7 @@ func generate_container():
 func set_weapon(e : Weapon):
 	set_weapon_noupdate(e)
 	attribute_container.override_weapon_attributes(e.weapon_attributes)
-
+	weapon.apply_container_stats(self)
 
 func set_weapon_noupdate(e : Weapon):
 	for c in $Mirror/Weapon.get_children():
@@ -92,9 +92,6 @@ func init():
 	$UpdateTargetPosition.start()
 	$UpdateTargets.start()
 	weapon = get_node("Mirror/Weapon").get_child(0)
-	if !weapon:
-		weapon = preload("res://src/Weapons/Fists.tscn").instantiate()
-	state_sounds(current_state)
 	_on_state_changed(current_state)
 
 func state_sounds(state):

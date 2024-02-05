@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://crkq52ujqc3mv"]
+
+[ext_resource type="PackedScene" uid="uid://dctt7dqkpf2r4" path="res://scripts/Weapon.tscn" id="1_kmlr7"]
+[ext_resource type="Script" path="res://weapons/MeleWeapon.gd" id="2_h71yb"]
+
+[node name="MeleWeapon" instance=ExtResource("1_kmlr7")]
+script = ExtResource("2_h71yb")

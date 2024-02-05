@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://btbm6672g53gd"]
+
+[ext_resource type="PackedScene" uid="uid://crkq52ujqc3mv" path="res://weapons/MeleWeapon.tscn" id="1_ge62v"]
+[ext_resource type="Texture2D" uid="uid://s6rndprue8b0" path="res://src/sprites/Weapons/Fist.png" id="2_kr7t1"]
+[ext_resource type="AnimationLibrary" uid="uid://jnbq4ek4ixwn" path="res://src/Weapons/FistsAnim.res" id="3_xgel3"]
+
+[node name="MeleWeapon" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_ge62v")]
+sprite_list = [NodePath("Sprite2D2"), NodePath("Sprite2D")]
+texture_variant_amount = 6
+texture_size = 8
+
+[node name="Sprite2D2" type="Sprite2D" parent="." index="0"]
+position = Vector2(8, 0)
+rotation = 0.523599
+texture = ExtResource("2_kr7t1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="1"]
+position = Vector2(-6, 0)
+rotation = -0.523599
+texture = ExtResource("2_kr7t1")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="2"]
+libraries = {
+"": ExtResource("3_xgel3")
+}

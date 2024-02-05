@@ -1,0 +1,103 @@
+[gd_scene load_steps=7 format=3 uid="uid://dgfqj7ip3nf1w"]
+
+[ext_resource type="PackedScene" uid="uid://crkq52ujqc3mv" path="res://weapons/MeleWeapon.tscn" id="1_vadbn"]
+[ext_resource type="Texture2D" uid="uid://cuinpg1lv1ajm" path="res://weapons/WeaponMap.png" id="4_01fd4"]
+
+[sub_resource type="Animation" id="Animation_nb6x2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(4, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_lrfgt"]
+resource_name = "attack"
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.2, 0.25, 0.4, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0472, 1.0472, 0.785397, 0.698132, 0.785397]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.2, 0.25, 0.4, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(4, 1), Vector2(-8, 0), Vector2(-8, 0), Vector2(7, 0), Vector2(0, 0), Vector2(7, 2)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.25, 0.45),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"on_attack"
+}, {
+"args": [],
+"method": &"on_attack"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_w3c3x"]
+_data = {
+"RESET": SubResource("Animation_nb6x2"),
+"attack": SubResource("Animation_lrfgt")
+}
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ohvn5"]
+atlas = ExtResource("4_01fd4")
+region = Rect2(0, 80, 20, 20)
+
+[node name="Rapiers" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_vadbn")]
+sprite_list = [NodePath("Sprite2D")]
+texture_variant_amount = 3
+texture_size = 20
+texture_row = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="0"]
+libraries = {
+"": SubResource("AnimationLibrary_w3c3x")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="1"]
+position = Vector2(4, 0)
+texture = SubResource("AtlasTexture_ohvn5")
+offset = Vector2(5, -5)

@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbotcjev7j0ef"]
+
+[ext_resource type="PackedScene" uid="uid://crkq52ujqc3mv" path="res://weapons/MeleWeapon.tscn" id="1_rlevi"]
+[ext_resource type="Texture2D" uid="uid://cuinpg1lv1ajm" path="res://weapons/WeaponMap.png" id="4_wxiqi"]
+[ext_resource type="AnimationLibrary" uid="uid://grjmfyoqgyfv" path="res://weapons/AxesAnim.res" id="5_fr14e"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7uf6p"]
+atlas = ExtResource("4_wxiqi")
+region = Rect2(0, 0, 20, 20)
+
+[node name="Axes" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_rlevi")]
+sprite_list = [NodePath("Sprite2D")]
+texture_variant_amount = 6
+texture_size = 20
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+position = Vector2(1, 1)
+texture = SubResource("AtlasTexture_7uf6p")
+offset = Vector2(5, -5)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="1"]
+libraries = {
+"": ExtResource("5_fr14e")
+}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dwpgujldka7k0"]
+[gd_scene load_steps=32 format=3 uid="uid://dwpgujldka7k0"]
 
 [ext_resource type="Script" path="res://scripts/Manager.gd" id="1_d4gce"]
 [ext_resource type="Script" path="res://scripts/Camera.gd" id="2_etiqh"]
@@ -11,6 +11,34 @@
 [ext_resource type="Texture2D" uid="uid://f1kacbvcjiej" path="res://src/sprites/UI/InventorySlot.png" id="8_gk08x"]
 [ext_resource type="Script" path="res://scripts/Map.gd" id="10_dhv54"]
 [ext_resource type="Texture2D" uid="uid://cnkjyg7a4pb5i" path="res://src/sprites/UI/Node.png" id="10_i8xh3"]
+[ext_resource type="Texture2D" uid="uid://d3b3a70vfukh8" path="res://src/sprites/Potions/TornadoPotion.png" id="12_kni7b"]
+[ext_resource type="Script" path="res://scripts/Potion.gd" id="13_egjtn"]
+[ext_resource type="Texture2D" uid="uid://7vctc3ibt0pa" path="res://src/sprites/Potions/RagePotion.png" id="13_iogev"]
+[ext_resource type="Texture2D" uid="uid://4cnrvwix1sm7" path="res://src/sprites/Potions/PoisonPotion.png" id="14_u1wa3"]
+[ext_resource type="Texture2D" uid="uid://d1ug3aae5uwre" path="res://src/sprites/Potions/LightningPotion.png" id="15_1h6q8"]
+[ext_resource type="Texture2D" uid="uid://c4gfav6mtmrw7" path="res://src/sprites/Potions/HealPotion.png" id="16_tk6bg"]
+[ext_resource type="Texture2D" uid="uid://ws4iomi5xgml" path="res://src/sprites/Potions/ChaosPotion.png" id="17_abi6q"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7bv4f"]
+draw_center = false
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+shadow_size = 5
+
+[sub_resource type="FontFile" id="FontFile_o18ua"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="Theme" id="Theme_dbe3b"]
+default_font = SubResource("FontFile_o18ua")
+default_font_size = 16
+TooltipPanel/styles/panel = SubResource("StyleBoxFlat_7bv4f")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hxn0f"]
 atlas = ExtResource("3_p4dkt")
@@ -64,6 +92,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_dbe3b")
 script = ExtResource("2_w7xp8")
 
 [node name="Prepare" type="Control" parent="UILayer/UI"]
@@ -148,7 +177,7 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-horizontal_scroll_mode = 2
+horizontal_scroll_mode = 0
 vertical_scroll_mode = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/UI/Prepare/Selector/ScrollContainer"]
@@ -332,6 +361,11 @@ fit_content = true
 [node name="StageSelector" type="ScrollContainer" parent="UILayer/UI"]
 visible = false
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_14gxp")
 script = ExtResource("10_dhv54")
 
@@ -620,7 +654,6 @@ texture_disabled = SubResource("AtlasTexture_k688k")
 stretch_mode = 4
 
 [node name="InBattle" type="Control" parent="UILayer/UI"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -657,7 +690,7 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 follow_focus = true
-horizontal_scroll_mode = 2
+horizontal_scroll_mode = 0
 vertical_scroll_mode = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UILayer/UI/InBattle/Selector/ScrollContainer"]
@@ -666,6 +699,48 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 alignment = 1
+
+[node name="Tornado" type="TextureRect" parent="UILayer/UI/InBattle/Selector/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+tooltip_text = " zxc"
+texture = ExtResource("12_kni7b")
+script = ExtResource("13_egjtn")
+type = 5
+
+[node name="RagePotion" type="TextureRect" parent="UILayer/UI/InBattle/Selector/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("13_iogev")
+script = ExtResource("13_egjtn")
+type = 3
+
+[node name="PositionPotion" type="TextureRect" parent="UILayer/UI/InBattle/Selector/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("14_u1wa3")
+script = ExtResource("13_egjtn")
+type = 2
+
+[node name="LightingPotion" type="TextureRect" parent="UILayer/UI/InBattle/Selector/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("15_1h6q8")
+script = ExtResource("13_egjtn")
+type = 1
+
+[node name="HealPotion" type="TextureRect" parent="UILayer/UI/InBattle/Selector/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("16_tk6bg")
+script = ExtResource("13_egjtn")
+
+[node name="ChaosPotion" type="TextureRect" parent="UILayer/UI/InBattle/Selector/ScrollContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("17_abi6q")
+script = ExtResource("13_egjtn")
 
 [node name="Hint" type="Panel" parent="UILayer/UI/InBattle/Selector"]
 visible = false

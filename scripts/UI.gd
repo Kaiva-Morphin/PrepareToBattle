@@ -3,7 +3,7 @@ extends Control
 
 var inventory_opened = false
 var cell_texture = load("res://src/sprites/UI/InventoryCell.png")
-var character = preload("res://src/Entities/Man.tscn")
+var character = preload("res://Entities/Man.tscn")
 
 
 @onready var inventory_bg = $Prepare/Inventory
@@ -86,6 +86,8 @@ func add_to_bar(e: Entity):
 	rect.custom_minimum_size = Vector2(64, 64)
 	rect.connect("gui_input", func(event): _bar_cell_gui_input(event, e) )
 	squad_selector_frame_container.add_child(rect)
+	e.reset()
+	e.in_inventory = true
 	e.reparent(rect)
 	e.scale = Vector2.ONE * 2
 	e.position = rect.custom_minimum_size / 2
@@ -121,10 +123,7 @@ func _bar_cell_gui_input(event: InputEvent, e : Entity) -> void: # for picking, 
 var inventory_selected_character : Entity = null
 
 var is_inventory_open = false
-func _ready():
-	is_inventory_open = $Prepare/Inventory.visible
-	#for entity in get_tree().get_nodes_in_group("entity"):
-	#	call_deferred("add_to_bar", entity)
+
 
 func _on_inventory_button_pressed() -> void:
 	is_inventory_open = !is_inventory_open
@@ -227,7 +226,6 @@ func update_slot_tooltip(slot):
 			var item = slot.get_child(0)
 			if item is Weapon:
 				if item.weapon_attributes:
-					
 					slot.tooltip_text = item.weapon_attributes.as_text()
 
 @onready var weapon_slot : Slot = $Prepare/Inventory/WeaponSlot
@@ -316,3 +314,37 @@ func _on_inventory_gui_input(event: InputEvent) -> void:
 				if !picked_item_slot.wearable_slot:
 					picked_item_slot.queue_free()
 				picked_item_slot = null
+
+
+
+func _ready():
+	is_inventory_open = $Prepare/Inventory.visible
+	#pick_potion
+	$InBattle/Selector/ScrollContainer/HBoxContainer/Tornado.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/Tornado) )
+	$InBattle/Selector/ScrollContainer/HBoxContainer/RagePotion.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/RagePotion) )
+	$InBattle/Selector/ScrollContainer/HBoxContainer/PositionPotion.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/PositionPotion) )
+	$InBattle/Selector/ScrollContainer/HBoxContainer/LightingPotion.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/LightingPotion) )
+	$InBattle/Selector/ScrollContainer/HBoxContainer/HealPotion.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/HealPotion) )
+	$InBattle/Selector/ScrollContainer/HBoxContainer/ChaosPotion.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/ChaosPotion) )
+	#
+	
+
+func add_potion():
+	pass
+
+var picked_potion_node : Potion = null
+func potion_gui_input(event, potion : Potion ):
+	if picked_potion_node: return
+	if Game.current_state == Game.GameState.prepare: return
+	if event is InputEventScreenDrag:
+		if !picked_potion_node:
+			var rect = squad_selector.get_global_rect()
+			if rect.has_point(get_global_mouse_position()):
+				pass
+			else: # put
+				#$Prepare/Selector/Hint.show()
+				picked_potion_node = potion
+				picked_potion_node.reparent(Game.manager)
+
+
+

@@ -5,7 +5,6 @@ var current_target : Entity = null
 
 @onready var animation_player = get_node_or_null("AnimationPlayer")
 
-
 var holder : Entity
 var weapon_attributes : Stats.WeaponAttributes
 var damage
@@ -15,7 +14,19 @@ var attack_range
 var attack_speed
 var lifesteal
 
+@export var sprite_list : Array[Sprite2D] = []
+@export var texture_variant_amount : int = 0
+@export var texture_size : int = 24
+@export var texture_row : int = 0
 
+func _ready() -> void:
+	pass
+
+func randomize_texture():
+	var i = randi_range(0, texture_variant_amount - 1)
+	for sprite in sprite_list:
+		if sprite.texture is AtlasTexture:
+			sprite.texture.region = Rect2(Vector2(texture_size * i, texture_size * texture_row), Vector2(texture_size, texture_size))
 
 func apply_container_stats(container_holder):
 	holder = container_holder
@@ -27,10 +38,7 @@ func apply_container_stats(container_holder):
 	lifesteal = container_holder.attribute_container.get_attribute_or_null(Stats.AttributeType.lifesteal)
 	set_attack_speed(attack_speed)
 
-func _ready():
-	pass
-
-func start_attack(target): # rename to start_attack
+func start_attack(target):
 	if !is_instance_valid(target): target = null; return
 	animation_player = get_node_or_null("AnimationPlayer")
 	if animation_player:
