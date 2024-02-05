@@ -22,52 +22,67 @@ func update_spawn_rects():
 			spawn_rects.append(c)
 
 var spawn_rects = []
-var picked_node : Entity = null
+var picked_node = null
 func _process(_delta: float) -> void:
 	var pos = Game.manager.get_global_mouse_position()
-	if Input.is_action_just_pressed("lmb"):
-		if !is_inventory_open:
-			if picked_node:
-				picked_node = null
-			else:
-				picked_node = null
-				if space_state:
-					var query = PhysicsRayQueryParameters2D.create(pos - Vector2(20, 20), pos + Vector2(20, 20))
-					var result = space_state.intersect_ray(query)
-					if result:
-						var col = result.collider
-						if col.is_in_group("entity") and col.is_in_group("player"):
-							$Prepare/Selector/Hint.show()
-							picked_node = col
-							picked_node.collision.disabled = true
-							picked_node.in_inventory = true
-	if Input.is_action_just_released("lmb"):
-		if picked_node:
-			var rect = squad_selector.get_global_rect()
-			if rect.has_point(get_global_mouse_position()):
-				picked_node.collision.disabled = true
-				picked_node.in_inventory = true
-				add_to_bar(picked_node)
-			else:
-				var is_any_spawn_rect_has_mouse = false
-				for spawn_rect in spawn_rects:
-					if spawn_rect.get_global_rect().has_point(pos):
-						is_any_spawn_rect_has_mouse = true
-						break
-				if is_any_spawn_rect_has_mouse:
-					picked_node.in_inventory = false
-					picked_node.collision.disabled = false
+	if Game.current_state == Game.GameState.prepare: # characters
+		if Input.is_action_just_pressed("lmb"):
+			if !is_inventory_open:
+				if picked_node:
+					picked_node = null
 				else:
+					picked_node = null
+					if space_state:
+						var query = PhysicsRayQueryParameters2D.create(pos - Vector2(20, 20), pos + Vector2(20, 20))
+						var result = space_state.intersect_ray(query)
+						if result:
+							var col = result.collider
+							if col.is_in_group("entity") and col.is_in_group("player"):
+								$Prepare/Selector/Hint.show()
+								picked_node = col
+								picked_node.collision.disabled = true
+								picked_node.in_inventory = true
+		if Input.is_action_just_released("lmb"):
+			if picked_node:
+				var rect = squad_selector.get_global_rect()
+				if rect.has_point(get_global_mouse_position()):
 					picked_node.collision.disabled = true
 					picked_node.in_inventory = true
 					add_to_bar(picked_node)
-			$Prepare/Selector/Hint.hide()
-			picked_node = null
-	if picked_node:
-		picked_node.position = pos
-	if picked_item:
-		picked_item.position = inventory_bg.get_local_mouse_position()
-
+				else:
+					var is_any_spawn_rect_has_mouse = false
+					for spawn_rect in spawn_rects:
+						if spawn_rect.get_global_rect().has_point(pos):
+							is_any_spawn_rect_has_mouse = true
+							break
+					if is_any_spawn_rect_has_mouse:
+						picked_node.in_inventory = false
+						picked_node.collision.disabled = false
+					else:
+						picked_node.collision.disabled = true
+						picked_node.in_inventory = true
+						add_to_bar(picked_node)
+				$Prepare/Selector/Hint.hide()
+				picked_node = null
+		if picked_node:
+			picked_node.position = pos
+		if picked_item:
+			picked_item.position = inventory_bg.get_local_mouse_position()
+	else: #potions
+		if Input.is_action_pressed("lmb"):
+			if picked_node:
+				picked_node.position = pos
+		if Input.is_action_just_released("lmb"):
+			if picked_node:
+				var rect = $InBattle/Selector.get_global_rect()
+				if rect.has_point(get_global_mouse_position()):
+					potion_to_bar(picked_node)
+					picked_node = null
+				else:
+					picked_node.apply_effect()
+					picked_node.queue_free()
+					picked_node = null
+					pass # apply potion
 
 
 func _input(event: InputEvent) -> void:
@@ -102,9 +117,7 @@ func _bar_cell_gui_input(event: InputEvent, e : Entity) -> void: # for picking, 
 				inventory_selected_character = e
 				update_inventory_character_preview()
 	else: # check for put
-		
 		if event is InputEventScreenDrag:
-			
 			if !picked_node:
 				var rect = squad_selector.get_global_rect()
 				#rect.position -= Vector2(2, 2)
@@ -140,11 +153,22 @@ func open_inventory():
 	$Prepare/Inventory.show()
 
 func close_inventory():
+	if picked_item:
+		
+		picked_item.reparent(picked_item_slot)
+		picked_item.position = slot_offset
+		picked_item = null
+		picked_item_slot = null
 	$Prepare/InventoryButton.texture_normal.region.position = Vector2(0, 0)
 	$Prepare/InventoryButton.texture_pressed.region.position = Vector2(16, 0)
 	$Prepare/Inventory.hide()
 
 func in_battle():
+	if picked_node:
+		if picked_node is Entity:
+			picked_node.collision.disabled = true
+			picked_node.in_inventory = true
+			add_to_bar(picked_node)
 	close_inventory()
 	$Prepare.hide()
 	$InBattle.show()
@@ -173,7 +197,10 @@ func item_selected(event: InputEvent, slot: Slot):
 					picked_item_slot = slot
 					picked_item = item
 					picked_item.reparent(inventory_bg)
+				#else:
+					#try_put(picked_item_slot, slot)
 	
+
 func try_swap_slots(_picked_item_slot : Slot, slot : Slot) -> bool:
 	if _picked_item_slot == slot:
 		picked_item.reparent(slot)
@@ -227,6 +254,12 @@ func update_slot_tooltip(slot):
 			if item is Weapon:
 				if item.weapon_attributes:
 					slot.tooltip_text = item.weapon_attributes.as_text()
+			if item is Armor:
+				if item.armor_attributes:
+					slot.tooltip_text = item.armor_attributes.as_text()
+			if item is Accessory:
+				if item.attributes:
+					slot.tooltip_text = item.attributes.as_text()
 
 @onready var weapon_slot : Slot = $Prepare/Inventory/WeaponSlot
 @onready var head_slot : Slot = $Prepare/Inventory/HeadSlot
@@ -236,19 +269,60 @@ func update_slot_tooltip(slot):
 @onready var accessory2_slot : Slot = $Prepare/Inventory/Acc2Slot
 
 func _on_head_slot_gui_input(event: InputEvent) -> void:
-	item_selected(event, head_slot)
+	#if !picked_item: return
+	if item_selected(event, head_slot):
+		var item = head_slot.get_item_or_null() 
+		if item:
+			var new_item = item.duplicate()
+			new_item.armor_attributes = item.armor_attributes
+			new_item.scale = Vector2.ONE
+			new_item.position = Vector2.ZERO
+			inventory_selected_character.set_armor_head(new_item)
+			update_inventory_character_preview()
 
 func _on_chest_slot_gui_input(event: InputEvent) -> void:
-	item_selected(event, chest_slot)
+	if item_selected(event, chest_slot):
+		var item = chest_slot.get_item_or_null() 
+		if item:
+			var new_item = item.duplicate()
+			new_item.armor_attributes = item.armor_attributes
+			new_item.scale = Vector2.ONE
+			new_item.position = Vector2.ZERO
+			inventory_selected_character.set_armor_chest(new_item)
+			update_inventory_character_preview()
 	
 func _on_legs_slot_gui_input(event: InputEvent) -> void:
-	item_selected(event, legs_slot)
+	if item_selected(event, legs_slot):
+		var item = legs_slot.get_item_or_null() 
+		if item:
+			var new_item = item.duplicate()
+			new_item.armor_attributes = item.armor_attributes
+			new_item.scale = Vector2.ONE
+			new_item.position = Vector2.ZERO
+			inventory_selected_character.set_armor_legs(new_item)
+			update_inventory_character_preview()
 
 func _on_acc_1_slot_gui_input(event: InputEvent) -> void:
-	item_selected(event, accessory1_slot)
+	if item_selected(event, accessory1_slot):
+		var item = accessory1_slot.get_item_or_null() 
+		if item:
+			var new_item = item.duplicate()
+			new_item.attributes = item.attributes
+			new_item.scale = Vector2.ONE
+			new_item.position = Vector2.ZERO
+			inventory_selected_character.set_accessory1(new_item)
+			update_inventory_character_preview()
 
 func _on_acc_2_slot_gui_input(event: InputEvent) -> void:
-	item_selected(event, accessory2_slot)
+	if item_selected(event, accessory2_slot):
+		var item = accessory2_slot.get_item_or_null() 
+		if item:
+			var new_item = item.duplicate()
+			new_item.attributes = item.attributes
+			new_item.scale = Vector2.ONE
+			new_item.position = Vector2.ZERO
+			inventory_selected_character.set_accessory2(new_item)
+			update_inventory_character_preview()
 
 func _on_weapon_slot_gui_input(event: InputEvent) -> void:
 	if !picked_item: return
@@ -277,6 +351,16 @@ func update_inventory_character_preview():
 		node.queue_free()
 	for child in weapon_slot.get_children():
 		child.queue_free()
+	for child in accessory1_slot.get_children():
+		child.queue_free()
+	for child in accessory2_slot.get_children():
+		child.queue_free()
+	for child in legs_slot.get_children():
+		child.queue_free()
+	for child in chest_slot.get_children():
+		child.queue_free()
+	for child in head_slot.get_children():
+		child.queue_free()
 	if inventory_selected_character:
 		var sprite = inventory_selected_character.get_node("Mirror").duplicate()
 		var weapon_node = inventory_selected_character.get_node("Mirror/Weapon")
@@ -286,6 +370,47 @@ func update_inventory_character_preview():
 			weapon_slot.add_child(weapon)
 			weapon.scale = Vector2.ONE * 2
 			weapon.position = slot_offset
+		
+		var item_node = inventory_selected_character.get_node("Mirror/Sprite/Head/HeadArmor")
+		if item_node.get_child_count() > 0:
+			var item = item_node.get_child(0).duplicate()
+			item.armor_attributes = item_node.get_child(0).armor_attributes
+			head_slot.add_child(item)
+			item.scale = Vector2.ONE * 2
+			item.position = slot_offset
+		
+		item_node = inventory_selected_character.get_node("Mirror/Sprite/Head/Accessory1")
+		if item_node.get_child_count() > 0:
+			var item = item_node.get_child(0).duplicate()
+			item.attributes = item_node.get_child(0).attributes
+			accessory1_slot.add_child(item)
+			item.scale = Vector2.ONE * 2
+			item.position = slot_offset
+		
+		item_node = inventory_selected_character.get_node("Mirror/Sprite/Head/Accessory2")
+		if item_node.get_child_count() > 0:
+			var item = item_node.get_child(0).duplicate()
+			item.attributes = item_node.get_child(0).attributes
+			accessory2_slot.add_child(item)
+			item.scale = Vector2.ONE * 2
+			item.position = slot_offset
+		
+		item_node = inventory_selected_character.get_node("Mirror/Sprite/Body")
+		if item_node.get_child_count() > 0:
+			var item = item_node.get_child(0).duplicate()
+			item.armor_attributes = item_node.get_child(0).armor_attributes
+			chest_slot.add_child(item)
+			item.scale = Vector2.ONE * 2
+			item.position = slot_offset
+		
+		item_node = inventory_selected_character.get_node("Mirror/Sprite/HiddenLegs")
+		if item_node.get_child_count() > 0:
+			var item = item_node.get_child(0).duplicate()
+			item.armor_attributes = item_node.get_child(0).armor_attributes
+			legs_slot.add_child(item)
+			item.scale = Vector2.ONE * 2
+			item.position = slot_offset
+		
 		preview_node.add_child(sprite)
 		sprite.scale = Vector2.ONE * 5
 	else:
@@ -327,24 +452,39 @@ func _ready():
 	$InBattle/Selector/ScrollContainer/HBoxContainer/HealPotion.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/HealPotion) )
 	$InBattle/Selector/ScrollContainer/HBoxContainer/ChaosPotion.connect("gui_input", func(event): potion_gui_input(event, $InBattle/Selector/ScrollContainer/HBoxContainer/ChaosPotion) )
 	#
-	
 
-func add_potion():
+
+func add_potion(type : Potion.PotionType):
 	pass
+	#$InBattle/Selector/ScrollContainer/HBoxContainer.add_child()
+
+func potion_to_bar(potion : Potion):
+	if potion:
+		potion.custom_minimum_size = Vector2.ONE * 64
+		potion.size = Vector2.ONE * 64
+		potion.reparent($InBattle/Selector/ScrollContainer/HBoxContainer)
+		potion.connect("gui_input", func(event): potion_gui_input(event,  potion))
+
+
 
 var picked_potion_node : Potion = null
 func potion_gui_input(event, potion : Potion ):
-	if picked_potion_node: return
-	if Game.current_state == Game.GameState.prepare: return
+	if picked_node: return
+	#if Game.current_state == Game.GameState.prepare: return
 	if event is InputEventScreenDrag:
 		if !picked_potion_node:
-			var rect = squad_selector.get_global_rect()
-			if rect.has_point(get_global_mouse_position()):
+			var rect = $InBattle/Selector.get_global_rect()
+			if rect.has_point(get_global_mouse_position()): # put
 				pass
-			else: # put
+			else: # pick
 				#$Prepare/Selector/Hint.show()
-				picked_potion_node = potion
-				picked_potion_node.reparent(Game.manager)
+				var new_potion = potion.duplicate()
+				potion.queue_free() # for clearing signal
+				picked_node = new_potion
+				new_potion.custom_minimum_size = Vector2.ONE * 16
+				new_potion.size = Vector2.ONE * 16
+				Game.manager.add_child(new_potion)
+
 
 
 

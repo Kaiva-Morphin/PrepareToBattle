@@ -4,7 +4,22 @@ var mappool = [
 	preload("res://maps/map_1.tscn"),
 	preload("res://maps/map_2.tscn"),
 	preload("res://maps/map_3.tscn"),
+	preload("res://maps/map_4.tscn"),
+	preload("res://maps/map_5.tscn"),
+	preload("res://maps/map_6.tscn"),
+	preload("res://maps/map_7.tscn"),
+	preload("res://maps/map_8.tscn"),
 ]
+var map_textures = [
+	load("res://maps/Castle.png"),
+	load("res://maps/White.png"),
+	load("res://maps/Forest.png"),
+	load("res://maps/Void.png"),
+	load("res://maps/Beach.png"),
+	load("res://maps/Mansion.png"),
+	load("res://maps/Plot.png")
+]
+
 @onready var camera = $Camera
 @onready var ui = $UILayer/UI
 
@@ -16,6 +31,10 @@ func next_level():
 		remove_child(prev_map)
 		prev_map.queue_free()
 	var map = mappool.pick_random().instantiate()
+	var tilemap : TileMap = map.get_node_or_null("TileMap")
+	if tilemap:
+		tilemap.tile_set.get_source(0).texture = map_textures.pick_random()
+
 	map.name = "map"
 	self.add_child(map)
 	camera.update_bounds()
@@ -32,7 +51,7 @@ func next_level():
 		enemy.team = Game.Team.enemy
 		add_child(enemy)
 		enemy.global_position = spawn_pos
-		
+
 
 func _on_check_alive_timer_timeout() -> void:
 	if Game.current_state == Game.GameState.inbattle:

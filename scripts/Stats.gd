@@ -299,7 +299,14 @@ class ItemAttributes:
 		if len(negative_additional_attributes) > 0:
 			text += "\n"
 		return text
+	func as_rich_text() -> String:
+		var stats_text = "\nСтаты Аксессуара:\n"
+		return get_as_rich_text_header() + "\n" + stats_text + "\n" + get_as_rich_text_bottom()
 	
+	
+	func as_text() -> String:
+		var stats_text = "\nСтаты Аксессуара:\n"
+		return get_as_text_header() + "\n" + stats_text + "\n" + get_as_text_bottom()
 	func apply_rarity_to_base_attributes(): pass # base_atrib -> base_atrib
 	func roll_base_attributes(): pass # base_atrib -> atrib
 	func add_or_reroll_additional_attributes():
@@ -462,22 +469,40 @@ class CharacterAttributes extends ItemAttributes:
 
 class ArmorAttributes extends ItemAttributes:
 	var base_evasion : Stats.Attribute
-	var base_damage_reduction : Stats.Attribute
+	var base_mele_reduction : Stats.Attribute
+	var base_projectile_reduction : Stats.Attribute
 	var evasion : Stats.Attribute
-	var damage_reduction : Stats.Attribute
-	func _init(damage_reduction_val, evasion_val) -> void:
-		base_damage_reduction = Stats.Attribute.new(Stats.AttributeType.health, damage_reduction_val)
-		base_evasion = Stats.Attribute.new(Stats.AttributeType.health_regeneration, evasion_val)
+	var mele_reduction : Stats.Attribute
+	var projectile_reduction : Stats.Attribute
+	func _init() -> void:
+		base_evasion = Stats.Attribute.new(Stats.AttributeType.evasion, Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.evasion))
+		base_mele_reduction = Stats.Attribute.new(Stats.AttributeType.mele_damage_reduction, Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.mele_damage_reduction))
+		base_projectile_reduction = Stats.Attribute.new(Stats.AttributeType.projectile_damage_reduction, Stats.get_base_attribute_value_for_multiply(Stats.AttributeType.projectile_damage_reduction))
 		evasion = base_evasion
-		damage_reduction = base_damage_reduction
+		mele_reduction = base_mele_reduction
+		projectile_reduction = base_projectile_reduction
+	func as_rich_text() -> String:
+		var stats_text = "\nБазовые Статы Брони:\n"
+		stats_text += "   {}: {}\n".format([evasion.get_string(), snapped(evasion.attribute_value, 0.01)], "{}")
+		stats_text += "   {}: {}\n".format([mele_reduction.get_string(), snapped(mele_reduction.attribute_value, 0.01)], "{}")
+		stats_text += "   {}: {}\n".format([projectile_reduction.get_string(), snapped(projectile_reduction.attribute_value, 0.01)], "{}")
+		return get_as_rich_text_header() + "\n" + stats_text + "\n" + get_as_rich_text_bottom()
 	
+	func as_text() -> String:
+		var stats_text = "\nБазовые Статы Брони:\n"
+		stats_text += "   {}: {}\n".format([evasion.get_string(), snapped(evasion.attribute_value, 0.01)], "{}")
+		stats_text += "   {}: {}\n".format([mele_reduction.get_string(), snapped(mele_reduction.attribute_value, 0.01)], "{}")
+		stats_text += "   {}: {}\n".format([projectile_reduction.get_string(), snapped(projectile_reduction.attribute_value, 0.01)], "{}")
+		return get_as_text_header() + "\n" + stats_text + "\n" + get_as_text_bottom()
 	func roll_base_attributes():
-		base_damage_reduction.attribute_value = base_damage_reduction.result_of_apply_base_distribution()
 		base_evasion.attribute_value = base_evasion.result_of_apply_base_distribution()
+		base_mele_reduction.attribute_value = base_mele_reduction.result_of_apply_base_distribution()
+		base_projectile_reduction.attribute_value = base_projectile_reduction.result_of_apply_base_distribution()
 	
 	func apply_rarity_to_base_attributes():
 		evasion.attribute_value = base_evasion.result_of_apply_rarity_base_distribution(item_rarity)
-		damage_reduction.attribute_value = base_damage_reduction.result_of_apply_rarity_base_distribution(item_rarity)
+		mele_reduction.attribute_value = base_mele_reduction.result_of_apply_rarity_base_distribution(item_rarity)
+		projectile_reduction.attribute_value = base_projectile_reduction.result_of_apply_rarity_base_distribution(item_rarity)
 
 func get_weapon_attributes_rarity(architype: Stats.WeaponArchiType, rarity: Rarity) -> WeaponAttributes:
 	var attributes : WeaponAttributes = get_weapon_architype_base_attributes_with_random_rarity(architype)
@@ -522,19 +547,19 @@ class AttributeContainer:
 			return result_attributes[attribute]
 		else:
 			return null
-	func override_accsesory1_attributes(item): # may be null
+	func override_accessory1_attributes(item : ItemAttributes): # may be null
 		current_accs1 = item
 		force_update()
-	func override_accsesory2_attributes(item): # may be null
+	func override_accessory2_attributes(item : ItemAttributes): # may be null
 		current_accs2 = item
 		force_update()
-	func override_armor_head_attributes(item): # may be null
+	func override_armor_head_attributes(item : ArmorAttributes): # may be null
 		current_armor_head = item
 		force_update()
-	func override_armor_chest_attributes(item): # may be null
+	func override_armor_chest_attributes(item : ArmorAttributes): # may be null
 		current_armor_chest = item
 		force_update()
-	func override_armor_legs_attributes(item): # may be null
+	func override_armor_legs_attributes(item : ArmorAttributes): # may be null
 		current_armor_legs = item
 		force_update()
 	func override_character_attributes(item: CharacterAttributes):
@@ -551,6 +576,13 @@ class AttributeContainer:
 			text = text + "   {}: {}\n".format([Stats.get_attribute_string(k), str(snapped(val, 0.01))], "{}")
 		text += "\n"
 		text += current_character.as_rich_text()
+		return text
+	
+	func get_final_stats() -> String:
+		var text = "Итоговые Статы:\n"
+		for k in result_attributes.keys():
+			var val = result_attributes[k]
+			text = text + "   {}: {}\n".format([Stats.get_attribute_string(k), str(snapped(val, 0.01))], "{}")
 		return text
 	
 	func get_as_text() -> String:
@@ -591,9 +623,9 @@ class AttributeContainer:
 				else:
 					attribute_modifyers[stat.attribute_type] = -stat.attribute_value
 		if current_armor_head:
-			armor_mele_damage_reduction_summ += current_armor_head.mele_damage_reduction
-			armor_projectile_damage_reduction_summ += current_armor_head.projectile_damage_reduction
-			armor_evasion_summ += current_armor_head.evasion
+			armor_mele_damage_reduction_summ += current_armor_head.mele_reduction.attribute_value
+			armor_projectile_damage_reduction_summ += current_armor_head.projectile_reduction.attribute_value
+			armor_evasion_summ += current_armor_head.evasion.attribute_value
 			for stat : Stats.Attribute in current_armor_head.positive_additional_attributes:
 				if attribute_modifyers.has(stat.attribute_type):
 					attribute_modifyers[stat.attribute_type] += stat.attribute_value
@@ -605,9 +637,9 @@ class AttributeContainer:
 				else:
 					attribute_modifyers[stat.attribute_type] = -stat.attribute_value
 		if current_armor_chest:
-			armor_mele_damage_reduction_summ += current_armor_chest.mele_damage_reduction
-			armor_projectile_damage_reduction_summ += current_armor_chest.projectile_damage_reduction
-			armor_evasion_summ += current_armor_chest.evasion
+			armor_mele_damage_reduction_summ += current_armor_chest.mele_reduction.attribute_value
+			armor_projectile_damage_reduction_summ += current_armor_chest.projectile_reduction.attribute_value
+			armor_evasion_summ += current_armor_chest.evasion.attribute_value
 			for stat : Stats.Attribute in current_armor_chest.positive_additional_attributes:
 				if attribute_modifyers.has(stat.attribute_type):
 					attribute_modifyers[stat.attribute_type] += stat.attribute_value
@@ -619,9 +651,9 @@ class AttributeContainer:
 				else:
 					attribute_modifyers[stat.attribute_type] = -stat.attribute_value
 		if current_armor_legs:
-			armor_mele_damage_reduction_summ += current_armor_legs.mele_damage_reduction
-			armor_projectile_damage_reduction_summ += current_armor_legs.projectile_damage_reduction
-			armor_evasion_summ += current_armor_legs.evasion
+			armor_mele_damage_reduction_summ += current_armor_legs.mele_reduction.attribute_value
+			armor_projectile_damage_reduction_summ += current_armor_legs.projectile_reduction.attribute_value
+			armor_evasion_summ += current_armor_legs.evasion.attribute_value
 			for stat : Stats.Attribute in current_armor_legs.positive_additional_attributes:
 				if attribute_modifyers.has(stat.attribute_type):
 					attribute_modifyers[stat.attribute_type] += stat.attribute_value
@@ -696,7 +728,16 @@ class AttributeContainer:
 						result_attributes[type] = armor_projectile_damage_reduction_summ * multiplier
 					else:
 						result_attributes[type] = (multiplier - 1)
-				_: result_attributes[type] = Stats.get_base_attribute_value_for_multiply(type) * multiplier; push_warning("unregistred stat passes " + str(type))
+				AttributeType.pierce: result_attributes[type] = Stats.get_base_attribute_value_for_multiply(type) * multiplier
+				AttributeType.projectile_speed: result_attributes[type] = Stats.get_base_attribute_value_for_multiply(type) * multiplier
+				#_: result_attributes[type] = Stats.get_base_attribute_value_for_multiply(type) * multiplier; push_warning("unregistred stat passes " + str(type))
+
+func get_random_armor_attributes() -> ArmorAttributes:
+	var armor_attributes : ArmorAttributes = ArmorAttributes.new()
+	armor_attributes.roll_base_attributes()
+	armor_attributes.item_rarity = get_random_rarity()
+	armor_attributes.add_or_reroll_additional_attributes()
+	return armor_attributes
 
 func get_random_weapon_attributes_architype(type: Stats.WeaponArchiType) -> WeaponAttributes:
 	var weapon_attributes : WeaponAttributes = get_weapon_architype_base_attributes_with_random_rarity(type)
@@ -711,6 +752,11 @@ func get_random_character_attributes() -> CharacterAttributes:
 	character_attributes.add_or_reroll_additional_attributes()
 	return character_attributes
 
+func get_random_item_attributes() -> ItemAttributes:
+	var item_attributes : ItemAttributes = ItemAttributes.new()
+	item_attributes.item_rarity = get_random_rarity()
+	item_attributes.add_or_reroll_additional_attributes()
+	return item_attributes
 
 enum WeaponArchiType{
 	Axe,

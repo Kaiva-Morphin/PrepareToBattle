@@ -14,12 +14,17 @@ func get_item_or_null() -> Item:
 
 
 func _make_custom_tooltip(for_text):
+	#var label = RichTextLabel.new()
+	##RichTextLabel.update_c
+	#var font = label.get_theme_font("normal_font")
+	##label.text = tooltip_text
+	#label.bbcode_enabled = true
+	#label.text = "[color=red]red\nred\nzxczxczxc"
+	#label.fit_content = true
+	#var s = font.get_string_size("red")
+	#label.custom_minimum_size = s
+	#label.custom_minimum_size.x = font.get_string_size("zxczxczxc").x
 	var label = Label.new()
-	#RichTextLabel.update_c
-
-	
-	#label.text = tooltip_text
-	label.text = "red"
 	var text = ""
 	var item = get_item_or_null()
 	if item:
@@ -50,5 +55,7 @@ func _make_custom_tooltip(for_text):
 				text = "[leg_armor slot]"
 			Game.ItemType.accsessory:
 				text = "[accsessory slot]"
-	label.text = for_text + "\n" + text
+	text = for_text + "\n" + text
+	label.text = text
+	
 	return label

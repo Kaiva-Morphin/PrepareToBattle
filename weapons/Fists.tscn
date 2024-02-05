@@ -1,8 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://btbm6672g53gd"]
+[gd_scene load_steps=6 format=3 uid="uid://btbm6672g53gd"]
 
 [ext_resource type="PackedScene" uid="uid://crkq52ujqc3mv" path="res://weapons/MeleWeapon.tscn" id="1_ge62v"]
-[ext_resource type="Texture2D" uid="uid://s6rndprue8b0" path="res://src/sprites/Weapons/Fist.png" id="2_kr7t1"]
+[ext_resource type="Texture2D" uid="uid://bx0j3hthq4it8" path="res://weapons/FistsMap.png" id="2_1ngob"]
 [ext_resource type="AnimationLibrary" uid="uid://jnbq4ek4ixwn" path="res://src/Weapons/FistsAnim.res" id="3_xgel3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y4fm0"]
+resource_local_to_scene = true
+atlas = ExtResource("2_1ngob")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wkawp"]
+resource_local_to_scene = true
+atlas = ExtResource("2_1ngob")
 
 [node name="MeleWeapon" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_ge62v")]
 sprite_list = [NodePath("Sprite2D2"), NodePath("Sprite2D")]
@@ -12,12 +20,12 @@ texture_size = 8
 [node name="Sprite2D2" type="Sprite2D" parent="." index="0"]
 position = Vector2(8, 0)
 rotation = 0.523599
-texture = ExtResource("2_kr7t1")
+texture = SubResource("AtlasTexture_y4fm0")
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="1"]
 position = Vector2(-6, 0)
 rotation = -0.523599
-texture = ExtResource("2_kr7t1")
+texture = SubResource("AtlasTexture_wkawp")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="2"]
 libraries = {

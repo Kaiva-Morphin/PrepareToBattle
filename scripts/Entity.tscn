@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dl8rc8ryu850g"]
+[gd_scene load_steps=9 format=3 uid="uid://dl8rc8ryu850g"]
 
 [ext_resource type="Script" path="res://scripts/Entity.gd" id="1_hn5vx"]
 [ext_resource type="Texture2D" uid="uid://wf2wxgguxpf3" path="res://src/sprites/levellabel.png" id="2_57mqj"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ldanhp1iacqk" path="res://src/sprites/healthlabel.png" id="4_srrrc"]
 [ext_resource type="Texture2D" uid="uid://gsv8yho6nxie" path="res://src/sprites/healthlabel_progress.png" id="5_surlc"]
 [ext_resource type="AudioStream" uid="uid://dyn0jku8dkoqw" path="res://src/assets/sound/walk.mp3" id="6_eqdc8"]
+[ext_resource type="Script" path="res://scripts/HINT.gd" id="7_juws1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6vtff"]
 radius = 5.5
@@ -106,6 +107,42 @@ text = "DEBUG"
 stream = ExtResource("6_eqdc8")
 volume_db = 0.3
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="HINT" type="Control" parent="CanvasLayer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -320.0
+offset_right = -380.0
+offset_bottom = -280.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(20, 20)
+mouse_filter = 1
+script = ExtResource("7_juws1")
+
+[node name="Panel" type="Panel" parent="CanvasLayer/HINT"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="UpdateHint" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
 [connection signal="timeout" from="UpdateTargetPosition" to="." method="_on_update_target_position_timeout"]
 [connection signal="timeout" from="Regenerate" to="." method="_on_regenerate_timeout"]
 [connection signal="timeout" from="UpdateTargets" to="." method="_on_update_targets_timeout"]
+[connection signal="timeout" from="UpdateHint" to="." method="_on_update_hint_timeout"]

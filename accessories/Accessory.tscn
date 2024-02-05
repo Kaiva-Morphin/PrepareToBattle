@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://k7dde0cgoqmk"]
+
+[ext_resource type="PackedScene" uid="uid://lw4ty1mbkcg4" path="res://item.tscn" id="1_s4do5"]
+[ext_resource type="Texture2D" uid="uid://dp7xan170imb6" path="res://armor/ArmorMap.png" id="2_iy5nq"]
+[ext_resource type="Script" path="res://accessories/Accessory.gd" id="2_sr5vj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ijyw"]
+resource_local_to_scene = true
+atlas = ExtResource("2_iy5nq")
+region = Rect2(0, 0, 1, 1)
+
+[node name="Accessory" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_s4do5")]
+script = ExtResource("2_sr5vj")
+sprite_list = [NodePath("Sprite2D")]
+texture_variant_amount = 16
+texture_size = 16
+texture_column = 3
+item_type = 5
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = SubResource("AtlasTexture_0ijyw")

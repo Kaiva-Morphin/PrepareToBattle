@@ -5,6 +5,7 @@
 [ext_resource type="AnimationLibrary" uid="uid://grjmfyoqgyfv" path="res://weapons/AxesAnim.res" id="5_fr14e"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7uf6p"]
+resource_local_to_scene = true
 atlas = ExtResource("4_wxiqi")
 region = Rect2(0, 0, 20, 20)
 

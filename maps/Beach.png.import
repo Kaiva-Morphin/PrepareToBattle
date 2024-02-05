@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c464m56037x5r"
-path="res://.godot/imported/Forenst.png-91c33c4348c2e21d3c5dff203e08ff31.ctex"
+uid="uid://bc5ktb7mmdbg5"
+path="res://.godot/imported/Beach.png-83a7aee0c871b06adf132d10c43fd34b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://maps/Forenst.png"
-dest_files=["res://.godot/imported/Forenst.png-91c33c4348c2e21d3c5dff203e08ff31.ctex"]
+source_file="res://maps/Beach.png"
+dest_files=["res://.godot/imported/Beach.png-83a7aee0c871b06adf132d10c43fd34b.ctex"]
 
 [params]
 

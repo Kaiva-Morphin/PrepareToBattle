@@ -83,6 +83,7 @@ _data = {
 }
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ohvn5"]
+resource_local_to_scene = true
 atlas = ExtResource("4_01fd4")
 region = Rect2(0, 80, 20, 20)
 

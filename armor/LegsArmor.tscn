@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8avxqlf3erx4"]
+
+[ext_resource type="PackedScene" uid="uid://2f84dv5ljhee" path="res://armor/ArmorItem.tscn" id="1_l7y3d"]
+[ext_resource type="Script" path="res://armor/LegsArmor.gd" id="2_844f7"]
+[ext_resource type="Texture2D" uid="uid://dp7xan170imb6" path="res://armor/ArmorMap.png" id="3_1n6or"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q34vt"]
+resource_local_to_scene = true
+atlas = ExtResource("3_1n6or")
+
+[node name="LegsArmor" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_l7y3d")]
+script = ExtResource("2_844f7")
+sprite_list = [NodePath("Sprite2D"), NodePath("Sprite2D2")]
+texture_variant_amount = 13
+texture_column = 2
+item_type = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+position = Vector2(-4, 0)
+texture = SubResource("AtlasTexture_q34vt")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." index="1"]
+position = Vector2(5, 0)
+texture = SubResource("AtlasTexture_q34vt")

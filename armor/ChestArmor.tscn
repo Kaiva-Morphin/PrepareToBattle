@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://dvsrpouivyd76"]
+
+[ext_resource type="PackedScene" uid="uid://2f84dv5ljhee" path="res://armor/ArmorItem.tscn" id="1_dx7qi"]
+[ext_resource type="Script" path="res://armor/ChestArmor.gd" id="2_1b7ox"]
+[ext_resource type="Texture2D" uid="uid://dp7xan170imb6" path="res://armor/ArmorMap.png" id="3_7d1fl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xe0v1"]
+resource_local_to_scene = true
+atlas = ExtResource("3_7d1fl")
+
+[node name="ChestArmor" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_dx7qi")]
+script = ExtResource("2_1b7ox")
+sprite_list = [NodePath("Sprite2D")]
+texture_variant_amount = 13
+texture_column = 1
+item_type = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = SubResource("AtlasTexture_xe0v1")

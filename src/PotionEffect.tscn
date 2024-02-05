@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqfpkmde304sw"]
+
+[ext_resource type="Script" path="res://PotionEffect.gd" id="1_ccnuj"]
+[ext_resource type="Texture2D" uid="uid://g427dj2qc5g" path="res://src/sprites/Potions/PotionArea.png" id="2_ury8q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7a4hm"]
+radius = 64.0
+
+[node name="PotionEffect" type="Area2D" groups=["potion_effect"]]
+script = ExtResource("1_ccnuj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_7a4hm")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+energy = 0.5
+texture = ExtResource("2_ury8q")
+
+[node name="EffectTimer" type="Timer" parent="."]
+
+[node name="LifetimeTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="EffectTimer" to="." method="_on_effect_timer_timeout"]
+[connection signal="timeout" from="LifetimeTimer" to="." method="_on_lifetime_timer_timeout"]

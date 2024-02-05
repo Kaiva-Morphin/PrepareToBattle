@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cuinpg1lv1ajm" path="res://weapons/WeaponMap.png" id="4_apuju"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tg0kq"]
+resource_local_to_scene = true
 atlas = ExtResource("4_apuju")
 region = Rect2(0, 40, 20, 20)
 

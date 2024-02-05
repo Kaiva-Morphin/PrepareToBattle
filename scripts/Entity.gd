@@ -3,12 +3,21 @@ extends CharacterBody2D
 
 var in_inventory = false
 
+var head_armor : HeadArmor = null
+var chest_armor : ChestArmor = null
+var legs_armor : LegsArmor = null
+var accsessorry1 : Accessory = null
+var accsessorry2 : Accessory = null
 @export var weapon : Weapon = null
 
 @export var paused := true
 
 @export var target : Entity = null
 @export var team : Game.Team
+
+var tornado : Vector2 = Vector2.ZERO
+
+
 var character_attributes
 var attribute_container
 
@@ -32,19 +41,20 @@ func reset():
 func update_container():
 	attribute_container.force_update()
 	current_hp = attribute_container.get_attribute_or_null(Stats.AttributeType.health)
+	
 	update_health()
 	weapon.apply_container_stats(self)
 	$EntityLabel/Level/Label.text = Stats.get_rarity_char(character_attributes.item_rarity)
+	$EntityLabel/Level.self_modulate = Stats.get_rarity_color(character_attributes.item_rarity)
+	$CanvasLayer/HINT.tooltip_text = attribute_container.get_final_stats()
 
 func generate_container():
 	attribute_container = Stats.AttributeContainer.new()
 	attribute_container.current_character = character_attributes
 	attribute_container.current_weapon = weapon.weapon_attributes
-	attribute_container.force_update()
-	current_hp = attribute_container.get_attribute_or_null(Stats.AttributeType.health)
-	update_health()
-	weapon.apply_container_stats(self)
-	$EntityLabel/Level/Label.text = Stats.get_rarity_char(character_attributes.item_rarity)
+	update_container()
+
+
 
 func set_weapon(e : Weapon):
 	set_weapon_noupdate(e)
@@ -57,7 +67,7 @@ func set_weapon_noupdate(e : Weapon):
 		c.queue_free()
 	weapon = e
 	$Mirror/Weapon.add_child(e)
-	
+
 
 
 func _ready():
@@ -75,6 +85,9 @@ func _ready():
 		null:
 			color = Color.BLACK
 	$EntityLabel.modulate = color
+	animation_player = get_node_or_null("Animation")
+	if animation_player:
+		animation_player.speed_scale = 0.8 + randf() * 0.4
 	if !paused:
 		init()
 
@@ -109,6 +122,13 @@ func _on_state_changed(_new_state):
 	pass
 
 
+func take_heal(amount):
+	current_hp += amount
+	update_health()
+	_on_heal()
+
+func _on_heal():
+	pass
 
 func take_damage(amount):
 	current_hp -= amount
@@ -155,14 +175,18 @@ func _physics_process(_delta): # move torwards target (if state)
 					$Mirror.scale.x = 1
 				else:
 					$Mirror.scale.x = -1
+				
 			else:
 				direction = to_local($NavigationAgent2D.get_next_path_position()).normalized()
 		if direction:
-			if direction.x > 0:
+			if direction.x > 0.1:
 				$Mirror.scale.x = 1
 			else:
 				$Mirror.scale.x = -1
 		velocity = direction * attribute_container.get_attribute_or_null(Stats.AttributeType.speed)
+		if tornado != Vector2.ZERO:
+			velocity = tornado
+			tornado = Vector2.ZERO
 		move_and_slide()
 
 func _process(_delta: float) -> void:
@@ -172,6 +196,14 @@ func _process(_delta: float) -> void:
 	if weapon and is_instance_valid(weapon):
 		debug_text += str(self.weapon.attack_range) + "\n"
 	$DEBUG.text = debug_text
+
+func _on_update_hint_timeout() -> void:
+	$CanvasLayer/HINT.position = self.global_position - $CanvasLayer/HINT.size * 0.5
+	if Game.manager.get_node("UILayer/UI").is_inventory_open:
+		$CanvasLayer/HINT.hide()
+	else:
+		$CanvasLayer/HINT.show()
+	#print($CanvasLayer/HINT.position)
 
 func update_health():
 	$EntityLabel/Level/Health.value = current_hp / attribute_container.get_attribute_or_null(Stats.AttributeType.health) * 100
@@ -186,3 +218,6 @@ func death():
 
 func _on_regenerate_timeout() -> void:
 	current_hp += attribute_container.get_attribute_or_null(Stats.AttributeType.health_regeneration)
+
+
+

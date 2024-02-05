@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://6dqtdrixrcm"]
+
+[ext_resource type="PackedScene" uid="uid://2f84dv5ljhee" path="res://armor/ArmorItem.tscn" id="1_pml7c"]
+[ext_resource type="Script" path="res://armor/HeadArmor.gd" id="2_b8xeq"]
+[ext_resource type="Texture2D" uid="uid://dp7xan170imb6" path="res://armor/ArmorMap.png" id="3_ejhve"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c8fe5"]
+resource_local_to_scene = true
+atlas = ExtResource("3_ejhve")
+region = Rect2(0, 0, 1, 1)
+
+[node name="HeadArmor" node_paths=PackedStringArray("sprite_list") instance=ExtResource("1_pml7c")]
+script = ExtResource("2_b8xeq")
+sprite_list = [NodePath("Sprite2D")]
+texture_variant_amount = 14
+item_type = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = SubResource("AtlasTexture_c8fe5")
