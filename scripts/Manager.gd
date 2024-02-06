@@ -26,12 +26,17 @@ var map_textures = [
 func next_level():
 	Game.stages_passed += 1
 	Game.current_state = Game.GameState.prepare
-	for node in get_tree().get_nodes_in_group("projectile"): node.despawn()
+	for node in get_tree().get_nodes_in_group("potion_effect"): node.queue_free()
+	for node in get_tree().get_nodes_in_group("projectile"): node.queue_free()
 	var prev_map = get_node_or_null("map")
 	if prev_map:
 		remove_child(prev_map)
 		prev_map.queue_free()
 	var map = mappool.pick_random().instantiate()
+	
+	#map = preload("res://maps/test_map.tscn").instantiate()
+	
+	
 	var tilemap : TileMap = map.get_node_or_null("TileMap")
 	if tilemap:
 		tilemap.tile_set.get_source(0).texture = map_textures.pick_random()
@@ -43,7 +48,7 @@ func next_level():
 	
 	$CheckAlive.start()
 	# spawn enemies
-	Game.difficulty = Game.stages_passed ** 1.5
+	Game.difficulty = Game.stages_passed ** 1.2
 	var number_of_enemies : int = round(Game.difficulty * Game.difficulty_enemy_multipler)
 	var spawn_rects = get_node("map/EnemySpawners").get_children()
 	for i in range(number_of_enemies):
@@ -56,9 +61,6 @@ func next_level():
 	ui.prepare()
 	chest()
 
-func _ready() -> void:
-	#chest()
-	pass
 
 var chest_closed = false
 func chest():
@@ -82,7 +84,7 @@ func _process(delta: float) -> void:
 			var character_chance = 100.
 			var potion_chance = 100.
 			var card_chance = 30.
-			var has_potion = Stats.ValueDistribution.new(0., 100.).get_random_value() < card_chance
+			var has_potion = Stats.ValueDistribution.new(0., 100.).get_random_value() < potion_chance
 			var has_character = Stats.ValueDistribution.new(0., 100.).get_random_value() < character_chance
 			var has_card = Stats.ValueDistribution.new(0., 100.).get_random_value() < character_chance
 			# armor -> weapon -> potion -> character -> card
@@ -135,9 +137,11 @@ func _process(delta: float) -> void:
 					n.queue_free()
 				var item = get_random_potion()
 				var preview = item.duplicate()
+				preview.scale = Vector2.ONE * 5
 				ui.potion_to_bar(item)
 				$UILayer/UI/Chest/ChestBackground/Card/Message.text = item.as_rich_text()
 				$UILayer/UI/Chest/ChestBackground/Card/Preview.add_child(preview)
+				preview.position -= preview.size * preview.scale * 0.5
 				$UILayer/UI/Chest/ChestBackground/CollectedItem.play()
 				await $UILayer/UI/Chest/ChestBackground/Card.pressed
 			
@@ -153,7 +157,6 @@ func _process(delta: float) -> void:
 				$UILayer/UI/Chest/ChestBackground/Card/Preview.add_child(preview)
 				$UILayer/UI/Chest/ChestBackground/Card/Message.text = entity.attributes.as_rich_text()
 				await $UILayer/UI/Chest/ChestBackground/Card.pressed
-			
 			#if has_card:
 				#for n in $UILayer/UI/Chest/ChestBackground/Card/Preview.get_children():
 					#$UILayer/UI/Chest/ChestBackground/Card/Preview.remove_child(n)
@@ -186,6 +189,7 @@ func _on_check_alive_timer_timeout() -> void:
 			Game.current_state = Game.GameState.game_over
 			$UILayer/UI/GAMEOVER.show()
 			$UILayer/UI/GAMEOVER/Label.text = "[center][color=red]Вы продержались {} этапов!".format([Game.stages_passed], "{}")
+			Game.reset()
 		if len(enemy) == 0:
 			for p in player:
 				p.reset()
@@ -226,32 +230,58 @@ func get_closest_oppositive_team_member(pos : Vector2, team : Game.Team) -> Node
 	return null
 
 func _on_attack_button_pressed() -> void:
-	ui.close_inventory()
+	var total_player_count = 0
+	var player_count = 0
 	for entity in get_tree().get_nodes_in_group("entity"):
-		if !entity.in_inventory:
-			entity.unpause()
-			Game.current_state = Game.GameState.inbattle
-			ui.in_battle()
-			$CheckAlive.start()
+		if entity.team == Game.Team.player:
+			total_player_count += 1
+			if !entity.in_inventory:
+				player_count += 1
+	if player_count > 0:
+		ui.close_inventory()
+		for entity in get_tree().get_nodes_in_group("entity"):
+			if !entity.in_inventory:
+				entity.unpause()
+				Game.current_state = Game.GameState.inbattle
+				ui.in_battle()
+				$CheckAlive.start()
+	else:
+		$UILayer/UI/WrongPlace.play()
 
 var weapons = [
-	[preload("res://weapons/Axes.tscn"), Stats.WeaponArchiType.Axe],
-	[preload("res://weapons/Fists.tscn"), Stats.WeaponArchiType.Fists],
-	[preload("res://weapons/Knifes.tscn"), Stats.WeaponArchiType.Knife],
-	[preload("res://weapons/Rapiers.tscn"), Stats.WeaponArchiType.Rapier],
-	[preload("res://weapons/Swords.tscn"), Stats.WeaponArchiType.Sword],
-	[preload("res://weapons/WarStaffs.tscn"), Stats.WeaponArchiType.WarStaff],
+	[[preload("res://weapons/Axes.tscn")], Stats.WeaponArchiType.Axe],
+	[[preload("res://weapons/Fists.tscn")], Stats.WeaponArchiType.Fists],
+	[[preload("res://weapons/Knifes.tscn")], Stats.WeaponArchiType.Knife],
+	[[preload("res://weapons/Rapiers.tscn")], Stats.WeaponArchiType.Rapier],
+	[[preload("res://weapons/Swords.tscn")], Stats.WeaponArchiType.Sword],
+	[[preload("res://weapons/WarStaffs.tscn")], Stats.WeaponArchiType.WarStaff],
+	[[preload("res://weapons/BatStaff.tscn"), preload("res://weapons/FireStaff.tscn"), preload("res://weapons/MoonStaff.tscn")], Stats.WeaponArchiType.MagicStaff],
 ]
 
 func get_random_binded_man() -> Entity:
 	var man = preload("res://entities/Man.tscn").instantiate()
-	var w = weapons.pick_random()
-	var weapon = w[0].instantiate().duplicate()
-	weapon.randomize_texture()
-	weapon.attributes = Stats.get_random_weapon_attributes_architype(w[1])
+	var weapon = get_random_weapon()
 	man.attributes = Stats.get_random_character_attributes()
 	man.set_weapon_noupdate(weapon)
 	man.generate_container()
+	if randf() < 0.5: man.set_accessory1(get_random_accessory())
+	if randf() < 0.5: man.set_accessory2(get_random_accessory())
+	if randf() < 0.5:
+		var item = armors[0].instantiate()
+		item.randomize_texture()
+		item.attributes = Stats.get_random_armor_attributes()
+		man.set_armor_head(item)
+	if randf() < 0.5:
+		var item = armors[1].instantiate()
+		item.randomize_texture()
+		item.attributes = Stats.get_random_armor_attributes()
+		man.set_armor_chest(item)
+	if randf() < 0.5:
+		var item = armors[2].instantiate()
+		item.randomize_texture()
+		item.attributes = Stats.get_random_armor_attributes()
+		man.set_armor_legs(item)
+	man.update_container()
 	return man
 
 var armors = [
@@ -278,7 +308,7 @@ func get_random_potion() -> Potion:
 
 func get_random_weapon() -> Weapon:
 	var w = weapons.pick_random()
-	var weapon = w[0].instantiate().duplicate()
+	var weapon = w[0].pick_random().instantiate()
 	weapon.randomize_texture()
 	weapon.attributes = Stats.get_random_weapon_attributes_architype(w[1])
 	return weapon

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cvrcwr7kl6258"]
+[gd_scene load_steps=16 format=3 uid="uid://cvrcwr7kl6258"]
 
 [ext_resource type="PackedScene" uid="uid://dl8rc8ryu850g" path="res://scripts/Entity.tscn" id="1_rqvxw"]
 [ext_resource type="Script" path="res://entities/Man.gd" id="2_e28tc"]
@@ -242,11 +242,8 @@ _data = {
 "Walk": SubResource("Animation_imj7k")
 }
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_w8r6m"]
-load_path = "res://.godot/imported/Human.png-168f456a3ec0d5e0f7dc36725d522b9a.ctex"
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_a40f2"]
-atlas = SubResource("CompressedTexture2D_w8r6m")
+atlas = ExtResource("3_q6h2s")
 region = Rect2(48, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kd4dj"]
@@ -314,6 +311,9 @@ texture = SubResource("AtlasTexture_knl71")
 
 [node name="Sprite2D" parent="Mirror/Weapon/Fists" index="1"]
 texture = SubResource("AtlasTexture_15w7i")
+
+[node name="Regenerate" parent="." index="4"]
+autostart = true
 
 [node name="Label" parent="EntityLabel/Level" index="0"]
 offset_left = -3.5

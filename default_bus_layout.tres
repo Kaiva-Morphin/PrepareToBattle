@@ -1,6 +1,7 @@
 [gd_resource type="AudioBusLayout" format=3 uid="uid://o8f2drk2kns4"]
 
 [resource]
+bus/0/volume_db = -8.39524
 bus/1/name = &"Entity"
 bus/1/solo = false
 bus/1/mute = false
@@ -17,11 +18,11 @@ bus/3/name = &"Background"
 bus/3/solo = false
 bus/3/mute = false
 bus/3/bypass_fx = false
-bus/3/volume_db = -0.130497
+bus/3/volume_db = -23.3524
 bus/3/send = &"Master"
 bus/4/name = &"Battle"
 bus/4/solo = false
 bus/4/mute = false
 bus/4/bypass_fx = false
-bus/4/volume_db = -0.328256
+bus/4/volume_db = -18.9844
 bus/4/send = &"Master"

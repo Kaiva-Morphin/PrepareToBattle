@@ -1,0 +1,101 @@
+[gd_scene load_steps=8 format=3 uid="uid://bvmcqeuoi6uf8"]
+
+[ext_resource type="PackedScene" uid="uid://dctt7dqkpf2r4" path="res://scripts/Weapon.tscn" id="1_b3iw0"]
+[ext_resource type="Script" path="res://weapons/FireStaff.gd" id="2_kj4lg"]
+[ext_resource type="Texture2D" uid="uid://dm4pw853fv7a8" path="res://weapons/StaffMap.png" id="3_nyr8u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f7gvt"]
+atlas = ExtResource("3_nyr8u")
+region = Rect2(0, 0, 10, 24)
+
+[sub_resource type="Animation" id="Animation_fupct"]
+resource_name = "attack"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(6, -4), Vector2(7, -1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.909839]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"on_attack"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_q26c4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(6, -4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r0ft2"]
+_data = {
+"RESET": SubResource("Animation_q26c4"),
+"attack": SubResource("Animation_fupct")
+}
+
+[node name="FireStaff" instance=ExtResource("1_b3iw0")]
+script = ExtResource("2_kj4lg")
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+position = Vector2(6, -4)
+texture = SubResource("AtlasTexture_f7gvt")
+
+[node name="SpawnPoint" type="Node2D" parent="Sprite2D" index="0"]
+position = Vector2(1.49056, -5.17477)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="1"]
+libraries = {
+"": SubResource("AnimationLibrary_r0ft2")
+}
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." index="2"]

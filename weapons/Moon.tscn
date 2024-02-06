@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3 uid="uid://cc525h0sb6y8s"]
+
+[ext_resource type="PackedScene" uid="uid://b2qid181mnguc" path="res://scripts/Projectile.tscn" id="1_saww1"]
+[ext_resource type="Texture2D" uid="uid://owfdfq7hlccd" path="res://weapons/Particle.png" id="2_pjjdn"]
+
+[sub_resource type="Animation" id="Animation_1ekfc"]
+resource_name = "animation"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -6.28319]
+}
+
+[sub_resource type="Animation" id="Animation_8j5lp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m3lib"]
+_data = {
+"RESET": SubResource("Animation_8j5lp"),
+"animation": SubResource("Animation_1ekfc")
+}
+
+[node name="RigidBody2D" instance=ExtResource("1_saww1")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="2"]
+libraries = {
+"": SubResource("AnimationLibrary_m3lib")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="3"]
+texture = ExtResource("2_pjjdn")

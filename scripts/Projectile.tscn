@@ -1,10 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2qid181mnguc"]
+[gd_scene load_steps=4 format=3 uid="uid://b2qid181mnguc"]
 
 [ext_resource type="Script" path="res://scripts/Projectile.gd" id="1_7k1h2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sib27"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_2cxr4"]
+
 [node name="RigidBody2D" type="RigidBody2D"]
+collision_layer = 0
+collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_7k1h2")
 
@@ -15,5 +19,6 @@ shape = SubResource("CircleShape2D_sib27")
 input_pickable = false
 
 [node name="Shape" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_2cxr4")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

@@ -57,13 +57,13 @@ func make_random():
 			tooltip_text =  " ЗЕЛЬЕ ЯРОСТИ "
 		PotionType.SummonPotion:
 			texture = load("res://src/sprites/Potions/SummonSkeletonsPotion.png")
-			tooltip_text =  " ЗЕЛБЕ ПРИЗЫВА "
+			tooltip_text =  " ЗЕЛЬЕ ПРИЗЫВА "
 		PotionType.TornadoPotion:
 			texture = load("res://src/sprites/Potions/TornadoPotion.png")
-			tooltip_text =  " ЗЕЛБЕ ТОРНАДО "
+			tooltip_text =  " ЗЕЛЬЕ ТОРНАДО "
 	#RagePotion,
 func as_rich_text():
-	return tooltip_text
+	return "[center]" + tooltip_text
 #static func tweening(area):
 	#var tween = create_tween()
 	#print(tween)

@@ -1,9 +1,8 @@
 extends Control
 
 
-var inventory_opened = false
 var cell_texture = load("res://src/sprites/UI/InventoryCell.png")
-var character = preload("res://Entities/Man.tscn")
+var character = preload("res://entities/Man.tscn")
 
 
 @onready var inventory_bg = $Prepare/Inventory
@@ -24,8 +23,17 @@ func update_spawn_rects():
 var spawn_rects = []
 var picked_node = null
 func _process(_delta: float) -> void:
+	if !is_instance_valid(Game.manager): return
 	var pos = Game.manager.get_global_mouse_position()
 	if Game.current_state == Game.GameState.prepare: # characters
+		if Input.is_action_just_pressed("ui_cancel"):
+			if $Settings.visible:
+				_on_settings_button_pressed()
+			elif is_inventory_open:
+				close_inventory()
+			elif !$Settings.visible:
+				_on_settings_button_pressed()
+		
 		if Input.is_action_just_pressed("lmb"):
 			if !is_inventory_open:
 				if picked_node:
@@ -91,13 +99,19 @@ func _process(_delta: float) -> void:
 					pass # apply potion
 
 
+func clear_inventory():
+	for node in $Prepare/Selector/ScrollContainer/HBoxContainer.get_children(): node.queue_free()
+	for node in $Prepare/Inventory/ScrollContainer/GridContainer.get_children(): node.queue_free()
+	for node in $InBattle/Selector/ScrollContainer/HBoxContainer.get_children(): node.queue_free()
+
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if event.button_mask == 1:
-			if !picked_node and !is_inventory_open:
+			if !picked_node and !is_inventory_open and !$Settings.visible:
 				var rect = squad_selector.get_global_rect()
 				if !rect.has_point(get_global_mouse_position()):
-					Game.manager.camera.target_position += -event.relative / Game.manager.camera.zoom.x
+					Game.manager.camera.target_position += -event.relative / (Game.manager.camera.zoom.x)
 				
 
 
@@ -566,10 +580,10 @@ func potion_gui_input(event, potion : Potion ):
 func _on_settings_button_pressed() -> void:
 	var tween = create_tween()
 	if $Settings.visible:
-		tween.tween_property($SettingsButton, "rotation", PI * 2, 0.3)
+		tween.tween_property($SettingsButton, "rotation", 0, 0.3)
 		$Settings.hide()
 	else:
-		tween.tween_property($SettingsButton, "rotation", 0, 0.3)
+		tween.tween_property($SettingsButton, "rotation", PI * 2, 0.3)
 		$Settings.show()
 
 var master_bus_idx = AudioServer.get_bus_index("Master")

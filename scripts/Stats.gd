@@ -89,18 +89,18 @@ func get_rarity_string(rarity: Rarity) -> String:
 enum AttributeType{
 	# character
 	health,
-	health_regeneration,
+	health_regeneration, # per second
 	speed,
 	# weapon
 	damage,
-	lifesteal,
-	attack_speed,
-	crit_chance,
-	crit_damage,
+	lifesteal, # 0.01 = 1%
+	attack_speed, 
+	crit_chance, 
+	crit_damage, # 0.01 = 1%
 	attack_range,
-	true_strike,
+	true_strike, # 0.01 = 1%
 	# armor
-	evasion,
+	evasion, # 0.01 = 1%
 	mele_damage_reduction,
 	projectile_damage_reduction,
 	# projectile
@@ -111,7 +111,7 @@ enum AttributeType{
 func get_base_attribute_value_for_multiply(type: AttributeType) -> float:
 	match type:
 		AttributeType.health: return 100
-		AttributeType.health_regeneration: return 1
+		AttributeType.health_regeneration: return 5
 		AttributeType.speed: return 50
 		AttributeType.damage: return 10
 		AttributeType.lifesteal: return 0.01 # %
@@ -123,8 +123,8 @@ func get_base_attribute_value_for_multiply(type: AttributeType) -> float:
 		AttributeType.evasion: return 1
 		AttributeType.mele_damage_reduction: return 0.01
 		AttributeType.projectile_damage_reduction: return 0.01
-		AttributeType.pierce: return 1
-		AttributeType.projectile_speed: return 100
+		AttributeType.pierce: return 1.
+		AttributeType.projectile_speed: return 1.
 	return 0
 
 
@@ -159,8 +159,8 @@ func get_attribute_string(attribute_type: AttributeType):
 		AttributeType.attack_range: return "Дальность Атаки"
 		AttributeType.true_strike: return "Шанс не промахнуться"
 		AttributeType.evasion: return "Шанс увернуться"
-		AttributeType.mele_damage_reduction: return "Уменьшение ближнего урона"
-		AttributeType.projectile_damage_reduction: return "Уменьшение дальнего урона"
+		AttributeType.mele_damage_reduction: return "Уменьшение входящего ближнего урона"
+		AttributeType.projectile_damage_reduction: return "Уменьшение входящего дальнего урона"
 		AttributeType.pierce: return "Пробивание у снарядов"
 		AttributeType.projectile_speed: return "Скорость снарядов"
 
@@ -217,13 +217,13 @@ var RarityStrengthSummOfPositiveSubStatsDistribution := { # in percents / 100 ->
 	Stats.Rarity.Uncommon: ValueDistribution.new(0.15, 0.15),
 	Stats.Rarity.Rare: ValueDistribution.new(0.20, 0.20),
 	Stats.Rarity.Awesome: ValueDistribution.new(0.30, 0.30),
-	Stats.Rarity.Strange: ValueDistribution.new(0.45, 0.45),
+	Stats.Rarity.Strange: ValueDistribution.new(0.60, 0.60),
 	Stats.Rarity.Mythical: ValueDistribution.new(0.40, 0.40),
 }
 
 var RarityNumberOfNegativeSubStatsDistribution := {
-	Stats.Rarity.Common: ValueDistribution.new(1., 2,),
-	Stats.Rarity.Uncommon: ValueDistribution.new(0., 1.),
+	Stats.Rarity.Common: ValueDistribution.new(0., 0,),
+	Stats.Rarity.Uncommon: ValueDistribution.new(0., 0.),
 	Stats.Rarity.Rare: ValueDistribution.new(0, 0),
 	Stats.Rarity.Awesome: ValueDistribution.new(0, 0),
 	Stats.Rarity.Strange: ValueDistribution.new(1., 2.),
@@ -231,11 +231,11 @@ var RarityNumberOfNegativeSubStatsDistribution := {
 }
 
 var RarityStrengthSummOfNegativeSubStatsDistribution := {
-	Stats.Rarity.Common: ValueDistribution.new(0.10, 0.15),
-	Stats.Rarity.Uncommon: ValueDistribution.new(0.02, 0.5),
+	Stats.Rarity.Common: ValueDistribution.new(0., 0.),
+	Stats.Rarity.Uncommon: ValueDistribution.new(0., 0.),
 	Stats.Rarity.Rare: ValueDistribution.new(0., 0.),
 	Stats.Rarity.Awesome: ValueDistribution.new(0., 0.),
-	Stats.Rarity.Strange: ValueDistribution.new(0.7, 0.15),
+	Stats.Rarity.Strange: ValueDistribution.new(0.07, 0.25),
 	Stats.Rarity.Mythical: ValueDistribution.new(0.5, 0.10),
 }
 
@@ -735,12 +735,14 @@ func get_random_armor_attributes() -> ArmorAttributes:
 	var attributes : ArmorAttributes = ArmorAttributes.new()
 	attributes.roll_base_attributes()
 	attributes.item_rarity = get_random_rarity()
+	attributes.apply_rarity_to_base_attributes()
 	attributes.add_or_reroll_additional_attributes()
 	return attributes
 
 func get_random_weapon_attributes_architype(type: Stats.WeaponArchiType) -> WeaponAttributes:
 	var attributes : WeaponAttributes = get_weapon_architype_base_attributes_with_random_rarity(type)
 	attributes.roll_base_attributes()
+	attributes.apply_rarity_to_base_attributes()
 	attributes.add_or_reroll_additional_attributes()
 	return attributes
 
@@ -748,6 +750,7 @@ func get_random_character_attributes() -> CharacterAttributes:
 	var attributes : CharacterAttributes = CharacterAttributes.new()
 	attributes.roll_base_attributes()
 	attributes.item_rarity = get_random_rarity()
+	attributes.apply_rarity_to_base_attributes()
 	attributes.add_or_reroll_additional_attributes()
 	return attributes
 

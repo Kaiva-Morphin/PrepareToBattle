@@ -132,6 +132,20 @@ func _on_heal():
 
 func take_damage(amount):
 	current_hp -= amount
+	
+	var label = Label.new()
+	label.scale = Vector2.ONE * 0.5
+	label.modulate = Color.RED
+	label.set("theme_override_colors/font_outline_color", Color.BLACK)
+	label.set("theme_override_constants/outline_size", 4.)
+	label.text = str(round(amount))
+	var start_pos = self.global_position
+	Game.manager.add_child(label)
+	label.position = start_pos + Vector2(0., -10.)
+	var tween2 = Game.manager.create_tween()
+	tween2.tween_property(label, "position", start_pos + Vector2(0., -25.), 1.)
+	tween2.connect("finished", func(): label.queue_free())
+	
 	if current_hp <= 0: death()
 	update_health()
 	_on_take_damage()
@@ -175,7 +189,6 @@ func _physics_process(_delta): # move torwards target (if state)
 					$Mirror.scale.x = 1
 				else:
 					$Mirror.scale.x = -1
-				
 			else:
 				direction = to_local($NavigationAgent2D.get_next_path_position()).normalized()
 		if direction:
@@ -217,7 +230,5 @@ func death():
 	self.queue_free()
 
 func _on_regenerate_timeout() -> void:
-	current_hp += attribute_container.get_attribute_or_null(Stats.AttributeType.health_regeneration)
-
-
+	current_hp = clamp(current_hp + attribute_container.get_attribute_or_null(Stats.AttributeType.health_regeneration), 0., attribute_container.get_attribute_or_null(Stats.AttributeType.health))
 

@@ -1,0 +1,15 @@
+[gd_scene load_steps=5 format=3 uid="uid://c64cbuu2a8ye6"]
+
+[ext_resource type="PackedScene" uid="uid://dctt7dqkpf2r4" path="res://scripts/Weapon.tscn" id="1_bawdb"]
+[ext_resource type="Script" path="res://weapons/Staff.gd" id="2_n6el3"]
+[ext_resource type="Texture2D" uid="uid://dm4pw853fv7a8" path="res://weapons/StaffMap.png" id="2_tbu18"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f47uu"]
+atlas = ExtResource("2_tbu18")
+region = Rect2(20, 0, 10, 24)
+
+[node name="Staff" instance=ExtResource("1_bawdb")]
+script = ExtResource("2_n6el3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = SubResource("AtlasTexture_f47uu")

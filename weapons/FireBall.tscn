@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://cs818pekdkfx6"]
+
+[ext_resource type="PackedScene" uid="uid://b2qid181mnguc" path="res://scripts/Projectile.tscn" id="1_j3248"]
+[ext_resource type="Texture2D" uid="uid://d2o84u6qqstgn" path="res://src/sprites/Particles/FireParticle.png" id="2_38lad"]
+[ext_resource type="Texture2D" uid="uid://c8ubgfhwwt6qh" path="res://src/sprites/Weapons/Fireball.png" id="3_efeic"]
+
+[sub_resource type="Curve" id="Curve_5tgec"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.866667, 0.571429), -1.74254, -1.74254, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_53dp1"]
+curve = SubResource("Curve_5tgec")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_56wl8"]
+lifetime_randomness = 0.4
+particle_flag_disable_z = true
+angle_max = 360.0
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 30.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 0, 0)
+damping_min = 100.0
+damping_max = 100.0
+scale_min = 0.5
+alpha_curve = SubResource("CurveTexture_53dp1")
+
+[node name="FireBall" instance=ExtResource("1_j3248")]
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." index="2"]
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_56wl8")
+texture = ExtResource("2_38lad")
+lifetime = 0.3
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="3"]
+texture = ExtResource("3_efeic")
